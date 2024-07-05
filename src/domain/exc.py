@@ -5,11 +5,12 @@ from dataclasses import dataclass
 class ColivingCashException(Exception):
     @property
     def message(self) -> str:
-        return f"Ошибка на уровне приложения"    
+        return f"Ошибка на уровне приложения"
+
 
 @dataclass(frozen=True)
 class UserNotFoundException(ColivingCashException):
-    username : str
+    username: str
 
     @property
     def message(self) -> str:
