@@ -24,7 +24,7 @@ class Mediator:
         if not handlers:
             # TODO: Raise an exception + log
             return
-        
+
         async with self.container() as container_r:
             handlers = [await container_r.get(handler) for handler in handlers]
         return [await handler.handle(command) for handler in handlers]

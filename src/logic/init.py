@@ -93,6 +93,7 @@ class MyProvider(Provider):
 
         return mediator
 
+
 class DummyProvider(MyProvider):
 
     @provide
@@ -109,7 +110,7 @@ class DummyProvider(MyProvider):
 
     @provide
     async def get_resident_repository(self) -> ResidentRepository:
-       return MemoryResidentRepository()
+        return MemoryResidentRepository()
 
 
 @lru_cache(1)
@@ -119,6 +120,7 @@ def init_container() -> AsyncContainer:
 
 def init_dummy_container() -> AsyncContainer:
     return make_async_container(DummyProvider())
+
 
 def _init_container() -> AsyncContainer:
     return make_async_container(MyProvider())
