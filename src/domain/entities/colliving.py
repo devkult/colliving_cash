@@ -12,27 +12,24 @@ class User(BaseEntity):
 @dataclass
 class Room(BaseEntity):
     name: str
-    users: list[User] = field(default_factory=list)
-
+    capacity: int
+    house_oid: str
 
 @dataclass
 class Bill(BaseEntity):
     amount: int
     title: str
     description: str
-
+    user_oid: str
 
 @dataclass
 class House(BaseEntity):
     name: str
-    owner: User 
-    users: list[User] = field(default_factory=list)
-    bills: dict[User : list[Bill]] = field(default_factory=dict)
-    rooms: list[Room] = field(default_factory=list)
+    owner_oid: str 
 
     @classmethod
-    def create(cls, name: str, owner: User) -> "House":
+    def create(cls, name: str, owner_oid: str) -> "House":
         return cls(
             name=name,
-            owner=owner,
+            owner_oid=owner_oid,
         )

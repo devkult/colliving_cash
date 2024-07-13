@@ -21,7 +21,7 @@ class CreateHouseCommandHandler(CommandHandler[CreateHouseCommand, House]):
         if user is None:
             raise UserNotFoundException(command.owner_uuid)
         
-        house = House.create(name=command.name, owner=user)
+        house = House.create(name=command.name, owner_oid=command.owner_uuid)
         return await self.house_repository.create(house)
 
         
