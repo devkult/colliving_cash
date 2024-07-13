@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 
 from domain.entities.colliving import House 
-from domain.exc import UserNotFoundException
 from logic.commands.base import BaseCommand, CommandHandler
+from logic.exceptions.colliving import UserNotFoundException
 from logic.interfaces.repository import IHouseRepository, IUserRepository
 
 
