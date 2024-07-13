@@ -2,14 +2,14 @@ from dataclasses import dataclass, field
 from typing import Optional, TypeAlias
 
 from domain.entities.colliving import Resident
-from logic.interfaces.repository import IResidentsRepository
+from logic.interfaces.repository import IResidentRepository
 
 RoomId = str
 UserId = str
 
 
 @dataclass
-class MemoryResidentRepository(IResidentsRepository):
+class MemoryResidentRepository(IResidentRepository):
     residents: dict[RoomId, list[UserId]] = field(default_factory=dict)
 
     async def create(self, resident: Resident) -> Resident:

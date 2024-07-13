@@ -9,7 +9,7 @@ from logic.exceptions.colliving import (
 )
 from logic.interfaces.repository import (
     IHouseRepository,
-    IResidentsRepository,
+    IResidentRepository,
     IRoomRepository,
     IUserRepository,
 )
@@ -82,7 +82,7 @@ class JoinRoomCommand(BaseCommand):
 class JoinRoomCommandHandler(CommandHandler[JoinRoomCommand, None]):
     user_repository: IUserRepository
     room_repository: IRoomRepository
-    resident_repository: IResidentsRepository
+    resident_repository: IResidentRepository
 
     async def handle(self, command: JoinRoomCommand) -> None:
         user = await self.user_repository.get_by_uuid(command.user_oid)

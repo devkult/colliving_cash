@@ -28,7 +28,7 @@ class IRoomRepository(ABC):
     async def get_by_uuid(self, uuid: str) -> Optional[Room]: ...
 
 
-class IResidentsRepository(ABC):
+class IResidentRepository(ABC):
     @abstractmethod
     async def create(self, resident: Resident) -> Resident: ...
 
