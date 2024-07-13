@@ -8,6 +8,11 @@ from domain.entities.base import BaseEntity
 class User(BaseEntity):
     name: str
 
+    @classmethod
+    def create(cls, name: str) -> "User":
+        return cls(
+            name=name,
+        )
 
 @dataclass
 class Room(BaseEntity):

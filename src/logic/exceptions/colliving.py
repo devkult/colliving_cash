@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from logic.exceptions.base import LogicException
 
 
-@dataclass
+@dataclass(frozen=True)
 class UserNotFoundException(LogicException):
     user_uuid: str
 
