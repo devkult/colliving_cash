@@ -10,4 +10,11 @@ class UserNotFoundException(LogicException):
     @property
     def message(self) -> str:
         return f"User with uuid {self.user_uuid} not found"
-    
+
+@dataclass(frozen=True)
+class HouseNotFoundException(LogicException):
+    house_uuid: str
+
+    @property
+    def message(self) -> str:
+        return f"House with uuid {self.house_uuid} not found"

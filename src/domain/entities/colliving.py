@@ -20,6 +20,14 @@ class Room(BaseEntity):
     capacity: int
     house_oid: str
 
+    @classmethod
+    def create(cls, name: str, capacity: int, house_oid: str) -> "Room":
+        return cls(
+            name=name,
+            capacity=capacity,
+            house_oid=house_oid
+        )
+
 @dataclass
 class Bill(BaseEntity):
     amount: int

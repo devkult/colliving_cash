@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field
+from typing import Optional
 from domain.entities.colliving import House
 from logic.interfaces.repository import IHouseRepository
 
@@ -9,4 +10,7 @@ class MemoryHouseRepository(IHouseRepository):
     async def create(self, house: House) -> House:
         self.houses.append(house)
         return house
+
+    async def get_by_oid(self, oid: str) -> Optional[House]:
+        return next((house for house in self.houses if house.oid == oid), None)
     
