@@ -6,7 +6,7 @@ from logic.interfaces.repository import IUserRepository
 
 
 @dataclass
-class MemoryUserRepository(IUserRepository): 
+class MemoryUserRepository(IUserRepository):
     users: list[User] = field(default_factory=list)
 
     async def create(self, user: User) -> User:

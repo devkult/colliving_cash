@@ -14,6 +14,7 @@ class User(BaseEntity):
             name=name,
         )
 
+
 @dataclass
 class Room(BaseEntity):
     name: str
@@ -22,11 +23,18 @@ class Room(BaseEntity):
 
     @classmethod
     def create(cls, name: str, capacity: int, house_oid: str) -> "Room":
-        return cls(
-            name=name,
-            capacity=capacity,
-            house_oid=house_oid
-        )
+        return cls(name=name, capacity=capacity, house_oid=house_oid)
+
+
+@dataclass
+class Resident(BaseEntity):
+    user_oid: str
+    room_oid: str
+
+    @classmethod
+    def create(cls, user_oid: str, room_oid: str) -> "Resident":
+        return cls(user_oid=user_oid, room_oid=room_oid)
+
 
 @dataclass
 class Bill(BaseEntity):
@@ -35,10 +43,11 @@ class Bill(BaseEntity):
     description: str
     user_oid: str
 
+
 @dataclass
 class House(BaseEntity):
     name: str
-    owner_oid: str 
+    owner_oid: str
 
     @classmethod
     def create(cls, name: str, owner_oid: str) -> "House":

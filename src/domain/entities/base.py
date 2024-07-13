@@ -11,9 +11,8 @@ class BaseEntity(ABC):
 
     def __hash__(self) -> int:
         return hash(self.oid)
-    
+
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, BaseEntity):
             return False
         return self.oid == other.oid
-

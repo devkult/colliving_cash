@@ -13,8 +13,8 @@ class MemoryRoomRepository(IRoomRepository):
         self.rooms.append(room)
         return room
 
-    async def get_by_oid(self, oid: str) -> Optional[Room]:
+    async def get_by_uuid(self, uuid: str) -> Optional[Room]:
         for room in self.rooms:
-            if room.oid == oid:
+            if room.oid == uuid:
                 return room
         return None
