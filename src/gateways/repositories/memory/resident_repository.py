@@ -22,3 +22,11 @@ class MemoryResidentRepository(ResidentRepository):
             if uuid in self.residents[room_oid]:
                 return Resident(oid=uuid, room_oid=room_oid)
         return None
+
+    async def get_by_room_uuid(self, room_uuid: str) -> list[Resident]:
+        if room_uuid in self.residents:
+            return [
+                Resident(oid=resident_uuid, room_oid=room_uuid)
+                for resident_uuid in self.residents[room_uuid]
+            ]
+        return []

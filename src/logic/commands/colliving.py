@@ -4,6 +4,7 @@ from domain.entities.colliving import House, Resident, Room, User
 from logic.commands.base import BaseCommand, CommandHandler
 from logic.exceptions.colliving import (
     HouseNotFoundException,
+    RoomIsFullException,
     RoomNotFoundException,
     UserNotFoundException,
 )
@@ -92,6 +93,12 @@ class JoinRoomCommandHandler(CommandHandler[JoinRoomCommand, None]):
         room = await self.room_repository.get_by_uuid(command.room_oid)
         if room is None:
             raise RoomNotFoundException(command.room_oid)
+
+        if (
+            len(await self.resident_repository.get_by_room_oid(room.oid)) + 1
+            > room.capacity
+        ):
+            raise RoomIsFullException(room.oid)
 
         resident = Resident.create(user_oid=command.user_oid, room_oid=command.room_oid)
         return await self.resident_repository.create(resident)

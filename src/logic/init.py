@@ -27,24 +27,24 @@ from logic.interfaces.repository import (
 from logic.mediator import Mediator
 
 
-class DummyProvider(Provider):
+class MyProvider(Provider):
     scope = Scope.REQUEST
 
     @provide
     async def get_user_repository(self) -> UserRepository:
-        return MemoryUserRepository()
+        pass
 
     @provide
     async def get_house_repository(self) -> HouseRepository:
-        return MemoryHouseRepository()
+        pass
 
     @provide
     async def get_room_repository(self) -> RoomRepository:
-        return MemoryRoomRepository()
+        pass
 
     @provide
     async def get_resident_repository(self) -> ResidentRepository:
-        return MemoryResidentRepository()
+        pass
 
     @provide
     async def get_create_user_command_handler(
@@ -93,11 +93,32 @@ class DummyProvider(Provider):
 
         return mediator
 
+class DummyProvider(MyProvider):
+
+    @provide
+    async def get_user_repository(self) -> UserRepository:
+        return MemoryUserRepository()
+
+    @provide
+    async def get_house_repository(self) -> HouseRepository:
+        return MemoryHouseRepository()
+
+    @provide
+    async def get_room_repository(self) -> RoomRepository:
+        return MemoryRoomRepository()
+
+    @provide
+    async def get_resident_repository(self) -> ResidentRepository:
+       return MemoryResidentRepository()
+
 
 @lru_cache(1)
 def init_container() -> AsyncContainer:
     return _init_container()
 
 
-def _init_container() -> AsyncContainer:
+def init_dummy_container() -> AsyncContainer:
     return make_async_container(DummyProvider())
+
+def _init_container() -> AsyncContainer:
+    return make_async_container(MyProvider())

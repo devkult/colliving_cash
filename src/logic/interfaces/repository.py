@@ -34,3 +34,6 @@ class ResidentRepository(ABC):
 
     @abstractmethod
     async def get_by_uuid(self, uuid: str) -> Optional[Resident]: ...
+
+    @abstractmethod
+    async def get_by_room_uuid(self, room_uuid: str) -> list[Resident]: ...

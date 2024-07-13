@@ -5,12 +5,12 @@ from logic.commands.colliving import (
     CreateUserCommand,
     JoinRoomCommand,
 )
-from logic.init import init_container
+from logic.init import init_dummy_container
 from logic.mediator import Mediator
 
 
 async def test() -> None:
-    container = init_container()
+    container = init_dummy_container()
     mediator = await container.get(Mediator)
     mediator.container = container
     user_res, *_ = await mediator.handle_command(CreateUserCommand("user1"))

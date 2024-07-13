@@ -28,3 +28,11 @@ class RoomNotFoundException(LogicException):
     @property
     def message(self) -> str:
         return f"Room with uuid {self.room_uuid} not found"
+
+@dataclass(frozen=True)
+class RoomIsFullException(LogicException):
+    room_uuid: str
+
+    @property
+    def message(self) -> str:
+        return f"Room with uuid {self.room_uuid} is full"

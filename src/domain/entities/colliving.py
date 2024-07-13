@@ -1,5 +1,4 @@
-from dataclasses import dataclass, field
-import datetime
+from dataclasses import dataclass
 
 from domain.entities.base import BaseEntity
 
