@@ -8,6 +8,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.12"
 black = "^24.4.2"
+dishka = "^1.2.0"
 
 
 [build-system]

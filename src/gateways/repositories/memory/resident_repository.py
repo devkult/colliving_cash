@@ -4,8 +4,8 @@ from typing import Optional, TypeAlias
 from domain.entities.colliving import Resident
 from logic.interfaces.repository import IResidentsRepository
 
-RoomId: TypeAlias = str
-UserId: TypeAlias = str
+RoomId = str
+UserId = str
 
 
 @dataclass

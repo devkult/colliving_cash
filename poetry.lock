@@ -70,6 +70,17 @@ files = [
 ]
 
 [[package]]
+name = "dishka"
+version = "1.2.0"
+description = "Minimal DI framework"
+optional = false
+python-versions = ">=3.10"
+files = [
+    {file = "dishka-1.2.0-py3-none-any.whl", hash = "sha256:d543497b611a448d14a4a138976435937b3b58e5657549f73e7df8c3fc04ccad"},
+    {file = "dishka-1.2.0.tar.gz", hash = "sha256:aae988a49f9f5e591cb103c45287a709378b2f3924a95192fceede168f8605dd"},
+]
+
+[[package]]
 name = "mypy-extensions"
 version = "1.0.0"
 description = "Type system extensions for programs checked with the mypy type checker."
@@ -121,4 +132,4 @@ type = ["mypy (>=1.8)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "290d3d314d98e129e7075c7ce7617e89aa17427899c49660d42034fb8564c60c"
+content-hash = "098fd19c222e52a32fb7d3ed5944ac96aac666e67d26c03474d19bcdab692998"
