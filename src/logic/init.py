@@ -19,10 +19,10 @@ from logic.commands.colliving import (
     JoinRoomCommandHandler,
 )
 from logic.interfaces.repository import (
-    IHouseRepository,
-    IResidentRepository,
-    IRoomRepository,
-    IUserRepository,
+    HouseRepository,
+    ResidentRepository,
+    RoomRepository,
+    UserRepository,
 )
 from logic.mediator import Mediator
 
@@ -31,30 +31,30 @@ class DummyProvider(Provider):
     scope = Scope.REQUEST
 
     @provide
-    async def get_user_repository(self) -> IUserRepository:
+    async def get_user_repository(self) -> UserRepository:
         return MemoryUserRepository()
 
     @provide
-    async def get_house_repository(self) -> IHouseRepository:
+    async def get_house_repository(self) -> HouseRepository:
         return MemoryHouseRepository()
 
     @provide
-    async def get_room_repository(self) -> IRoomRepository:
+    async def get_room_repository(self) -> RoomRepository:
         return MemoryRoomRepository()
 
     @provide
-    async def get_resident_repository(self) -> IResidentRepository:
+    async def get_resident_repository(self) -> ResidentRepository:
         return MemoryResidentRepository()
 
     @provide
     async def get_create_user_command_handler(
-        self, user_repository: IUserRepository
+        self, user_repository: UserRepository
     ) -> CreateUserCommandHandler:
         return CreateUserCommandHandler(user_repository=user_repository)
 
     @provide
     async def get_create_house_command_handler(
-        self, house_repository: IHouseRepository, user_repository: IUserRepository
+        self, house_repository: HouseRepository, user_repository: UserRepository
     ) -> CreateHouseCommandHandler:
         return CreateHouseCommandHandler(
             house_repository=house_repository, user_repository=user_repository
@@ -62,7 +62,7 @@ class DummyProvider(Provider):
 
     @provide
     async def get_create_room_command_handler(
-        self, room_repository: IRoomRepository, house_repository: IHouseRepository
+        self, room_repository: RoomRepository, house_repository: HouseRepository
     ) -> CreateRoomCommandHandler:
         return CreateRoomCommandHandler(
             room_repository=room_repository, house_repository=house_repository
@@ -71,9 +71,9 @@ class DummyProvider(Provider):
     @provide
     async def get_join_room_command_handler(
         self,
-        user_repository: IUserRepository,
-        room_repository: IRoomRepository,
-        resident_repository: IResidentRepository,
+        user_repository: UserRepository,
+        room_repository: RoomRepository,
+        resident_repository: ResidentRepository,
     ) -> JoinRoomCommandHandler:
         return JoinRoomCommandHandler(
             user_repository=user_repository,
@@ -81,19 +81,15 @@ class DummyProvider(Provider):
             resident_repository=resident_repository,
         )
 
-    @provide
+    @provide(scope=Scope.APP)
     async def get_mediator(
         self,
-        get_create_user_command_handler: CreateUserCommandHandler,
-        get_join_room_command_handler: JoinRoomCommandHandler,
-        get_create_room_command_handler: CreateRoomCommandHandler,
-        get_create_house_command_handler: CreateHouseCommandHandler,
     ) -> Mediator:
         mediator = Mediator()
-        mediator.register_command(CreateUserCommand, [get_create_user_command_handler])
-        mediator.register_command(JoinRoomCommand, [get_join_room_command_handler])
-        mediator.register_command(CreateRoomCommand, [get_create_room_command_handler])
-        mediator.register_command(CreateHouseCommand, [get_create_house_command_handler])
+        mediator.register_command(CreateUserCommand, [CreateUserCommandHandler])
+        mediator.register_command(JoinRoomCommand, [JoinRoomCommandHandler])
+        mediator.register_command(CreateRoomCommand, [CreateRoomCommandHandler])
+        mediator.register_command(CreateHouseCommand, [CreateHouseCommandHandler])
 
         return mediator
 

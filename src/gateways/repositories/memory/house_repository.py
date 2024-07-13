@@ -1,12 +1,11 @@
 from dataclasses import dataclass, field
 from typing import Optional
 from domain.entities.colliving import House
-from logic.interfaces.repository import IHouseRepository
+from logic.interfaces.repository import HouseRepository
 
 
-@dataclass
-class MemoryHouseRepository(IHouseRepository):
-    houses: list[House] = field(default_factory=list)
+class MemoryHouseRepository(HouseRepository):
+    houses: list[House] = []
 
     async def create(self, house: House) -> House:
         self.houses.append(house)

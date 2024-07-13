@@ -8,10 +8,10 @@ from logic.exceptions.colliving import (
     UserNotFoundException,
 )
 from logic.interfaces.repository import (
-    IHouseRepository,
-    IResidentRepository,
-    IRoomRepository,
-    IUserRepository,
+    HouseRepository,
+    ResidentRepository,
+    RoomRepository,
+    UserRepository,
 )
 
 
@@ -22,7 +22,7 @@ class CreateUserCommand(BaseCommand):
 
 @dataclass
 class CreateUserCommandHandler(CommandHandler[CreateUserCommand, User]):
-    user_repository: IUserRepository
+    user_repository: UserRepository
 
     async def handle(self, command: CreateUserCommand) -> User:
         user = User.create(name=command.name)
@@ -37,8 +37,8 @@ class CreateHouseCommand(BaseCommand):
 
 @dataclass
 class CreateHouseCommandHandler(CommandHandler[CreateHouseCommand, House]):
-    house_repository: IHouseRepository
-    user_repository: IUserRepository
+    house_repository: HouseRepository
+    user_repository: UserRepository
 
     async def handle(self, command: CreateHouseCommand) -> House:
         user = await self.user_repository.get_by_uuid(command.owner_uuid)
@@ -58,8 +58,8 @@ class CreateRoomCommand(BaseCommand):
 
 @dataclass
 class CreateRoomCommandHandler(CommandHandler[CreateRoomCommand, Room]):
-    house_repository: IHouseRepository
-    room_repository: IRoomRepository
+    house_repository: HouseRepository
+    room_repository: RoomRepository
 
     async def handle(self, command: CreateRoomCommand) -> Room:
         house = await self.house_repository.get_by_uuid(command.house_oid)
@@ -80,9 +80,9 @@ class JoinRoomCommand(BaseCommand):
 
 @dataclass
 class JoinRoomCommandHandler(CommandHandler[JoinRoomCommand, None]):
-    user_repository: IUserRepository
-    room_repository: IRoomRepository
-    resident_repository: IResidentRepository
+    user_repository: UserRepository
+    room_repository: RoomRepository
+    resident_repository: ResidentRepository
 
     async def handle(self, command: JoinRoomCommand) -> None:
         user = await self.user_repository.get_by_uuid(command.user_oid)

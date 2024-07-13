@@ -4,7 +4,7 @@ from typing import Optional
 from domain.entities.colliving import House, Resident, Room, User
 
 
-class IHouseRepository(ABC):
+class HouseRepository(ABC):
     @abstractmethod
     async def create(self, home: House) -> House: ...
 
@@ -12,7 +12,7 @@ class IHouseRepository(ABC):
     async def get_by_uuid(self, uuid: str) -> Optional[House]: ...
 
 
-class IUserRepository(ABC):
+class UserRepository(ABC):
     @abstractmethod
     async def create(self, user: User) -> User: ...
 
@@ -20,7 +20,7 @@ class IUserRepository(ABC):
     async def get_by_uuid(self, uuid: str) -> Optional[User]: ...
 
 
-class IRoomRepository(ABC):
+class RoomRepository(ABC):
     @abstractmethod
     async def create(self, room: Room) -> Room: ...
 
@@ -28,7 +28,7 @@ class IRoomRepository(ABC):
     async def get_by_uuid(self, uuid: str) -> Optional[Room]: ...
 
 
-class IResidentRepository(ABC):
+class ResidentRepository(ABC):
     @abstractmethod
     async def create(self, resident: Resident) -> Resident: ...
 

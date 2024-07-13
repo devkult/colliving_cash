@@ -1,6 +1,8 @@
 from dataclasses import dataclass, field
 from typing import DefaultDict, Iterable
 
+from dishka import AsyncContainer
+
 from logic.commands.base import CR, CT, BaseCommand, CommandHandler
 
 
@@ -9,6 +11,7 @@ class Mediator:
     commands_map: dict[CT, list[CommandHandler]] = field(
         default_factory=lambda: DefaultDict(list)
     )
+    container: AsyncContainer = None
 
     def register_command(
         self, command: CT, handlers: Iterable[CommandHandler[CT, CR]]
@@ -21,5 +24,7 @@ class Mediator:
         if not handlers:
             # TODO: Raise an exception + log
             return
-
+        
+        async with self.container() as container_r:
+            handlers = [await container_r.get(handler) for handler in handlers]
         return [await handler.handle(command) for handler in handlers]
