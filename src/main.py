@@ -3,7 +3,7 @@ from logic.mediator import Mediator
 
 
 async def main() -> None:
-    container =  init_container()
+    container = init_container()
     mediator = await container.get(Mediator)
 
 

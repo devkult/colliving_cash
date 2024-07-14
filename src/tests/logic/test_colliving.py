@@ -60,7 +60,9 @@ async def test_create_room(
 
 
 @pytest.mark.asyncio
-async def test_create_room_with_non_existing_house(mediator: Mediator, faker: Faker) -> None:
+async def test_create_room_with_non_existing_house(
+    mediator: Mediator, faker: Faker
+) -> None:
     with pytest.raises(HouseNotFoundException):
         await mediator.handle_command(
             CreateRoomCommand(

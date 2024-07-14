@@ -28,19 +28,24 @@ async def mediator(container: AsyncContainer) -> Mediator:
     mediator.container = container
     return mediator
 
+
 @fixture()
 async def user_repository(container: AsyncContainer) -> UserRepository:
     async with container() as container_r:
         return await container_r.get(UserRepository)
+
+
 @fixture()
 async def house_repository(container: AsyncContainer) -> HouseRepository:
     async with container() as container_r:
         return await container_r.get(HouseRepository)
 
+
 @fixture()
 async def room_repository(container: AsyncContainer) -> RoomRepository:
     async with container() as container_r:
         return await container_r.get(RoomRepository)
+
 
 @fixture()
 async def resident_repository(container: AsyncContainer) -> ResidentRepository:

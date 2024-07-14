@@ -88,15 +88,9 @@ class MyProvider(Provider):
         return mediator
 
 
-
-
-
 @lru_cache(1)
 def init_container() -> AsyncContainer:
     return _init_container()
-
-
-
 
 
 def _init_container() -> AsyncContainer:
