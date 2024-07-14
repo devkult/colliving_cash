@@ -16,6 +16,7 @@ pydantic = "^2.8.2"
 sqlalchemy = "^2.0.31"
 pydantic-settings = "^2.3.4"
 alembic = "^1.13.2"
+psycopg2-binary = "^2.9.9"
 
 
 [tool.pytest.ini_options]
