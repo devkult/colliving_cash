@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException, status
-from dishka import FromDishka, inject
+from dishka import FromDishka
+from dishka.integrations.fastapi import inject
 
 from application.api.colliving.house.schemas import (
     CreateHouseRequestSchema,
@@ -9,7 +10,7 @@ from domain.exc import ColivingCashException
 from logic.commands.colliving import CreateHouseCommand
 from logic.mediator import Mediator
 
-router = APIRouter(prefix="/house")
+router = APIRouter()
 
 
 @router.post(

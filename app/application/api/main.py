@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from dishka.integrations.fastapi import setup_dishka
 from logic.init import init_container
 from logic.mediator import Mediator
-
+from application.api.colliving import router as api_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -20,11 +20,15 @@ def create_app() -> FastAPI:
     app = FastAPI(
         title="CollivingCash",
         description="CollivingCash API",
+        docs_url="/api/docs",
         version="1.0.0",
         debug=True,
         lifespan=lifespan,
     )
 
+    app.include_router(api_router, prefix="/api")
+    
     container = init_container()
     setup_dishka(container, app)
+
     return app

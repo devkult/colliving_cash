@@ -11,6 +11,8 @@ black = "^24.4.2"
 dishka = "^1.2.0"
 pytest-asyncio = "^0.23.7"
 faker = "^26.0.0"
+fastapi = "^0.111.0"
+pydantic = "^2.8.2"
 
 
 [tool.pytest.ini_options]
