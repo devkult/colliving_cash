@@ -55,7 +55,7 @@ class CreateHouseCommandHandler(CommandHandler[CreateHouseCommand, House]):
 class CreateRoomCommand(BaseCommand):
     name: str
     capacity: int
-    house_oid: str
+    house_uuid: str
 
 
 @dataclass
@@ -64,12 +64,12 @@ class CreateRoomCommandHandler(CommandHandler[CreateRoomCommand, Room]):
     room_repository: RoomRepository
 
     async def handle(self, command: CreateRoomCommand) -> Room:
-        house = await self.house_repository.get_by_uuid(command.house_oid)
+        house = await self.house_repository.get_by_uuid(command.house_uuid)
         if house is None:
-            raise HouseNotFoundException(command.house_oid)
+            raise HouseNotFoundException(command.house_uuid)
 
         room = Room.create(
-            name=command.name, capacity=command.capacity, house_id=command.house_oid
+            name=command.name, capacity=command.capacity, house_id=command.house_uuid
         )
         return await self.room_repository.create(room)
 

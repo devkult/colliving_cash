@@ -9,7 +9,12 @@ readme = "README.md"
 python = "^3.12"
 black = "^24.4.2"
 dishka = "^1.2.0"
+pytest-asyncio = "^0.23.7"
+faker = "^26.0.0"
 
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
 
 [build-system]
 requires = ["poetry-core"]
