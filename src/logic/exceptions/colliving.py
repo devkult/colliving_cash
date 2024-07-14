@@ -37,3 +37,13 @@ class RoomIsFullException(LogicException):
     @property
     def message(self) -> str:
         return f"Room with uuid {self.room_uuid} is full"
+
+
+@dataclass(frozen=True)
+class UserAlreadyInRoomException(LogicException):
+    user_uuid: str
+    room_uuid: str
+
+    @property
+    def message(self) -> str:
+        return f"User with uuid {self.user_uuid} already in room with uuid {self.room_uuid}"

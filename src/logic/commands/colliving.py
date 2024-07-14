@@ -6,6 +6,7 @@ from logic.exceptions.colliving import (
     HouseNotFoundException,
     RoomIsFullException,
     RoomNotFoundException,
+    UserAlreadyInRoomException,
     UserNotFoundException,
 )
 from logic.interfaces.repository import (
@@ -46,7 +47,7 @@ class CreateHouseCommandHandler(CommandHandler[CreateHouseCommand, House]):
         if user is None:
             raise UserNotFoundException(command.owner_uuid)
 
-        house = House.create(name=command.name, owner_oid=command.owner_uuid)
+        house = House.create(name=command.name, owner_id=command.owner_uuid)
         return await self.house_repository.create(house)
 
 
@@ -68,7 +69,7 @@ class CreateRoomCommandHandler(CommandHandler[CreateRoomCommand, Room]):
             raise HouseNotFoundException(command.house_oid)
 
         room = Room.create(
-            name=command.name, capacity=command.capacity, house_oid=command.house_oid
+            name=command.name, capacity=command.capacity, house_id=command.house_oid
         )
         return await self.room_repository.create(room)
 
@@ -94,11 +95,12 @@ class JoinRoomCommandHandler(CommandHandler[JoinRoomCommand, None]):
         if room is None:
             raise RoomNotFoundException(command.room_oid)
 
-        if (
-            len(await self.resident_repository.get_by_room_oid(room.oid)) + 1
-            > room.capacity
-        ):
+        residents = await self.resident_repository.get_by_room_uuid(room.oid)
+        if len(residents) >= room.capacity:
             raise RoomIsFullException(room.oid)
-
-        resident = Resident.create(user_oid=command.user_oid, room_oid=command.room_oid)
+        
+        if user.oid in [resident.user_id for resident in residents]:
+            raise UserAlreadyInRoomException(command.user_oid, room.oid)
+        
+        resident = Resident.create(user_id=command.user_oid, room_id=command.room_oid)
         return await self.resident_repository.create(resident)

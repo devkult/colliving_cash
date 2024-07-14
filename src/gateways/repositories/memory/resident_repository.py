@@ -12,21 +12,21 @@ class MemoryResidentRepository(ResidentRepository):
     residents: dict[RoomId, list[UserId]] = {}
 
     async def create(self, resident: Resident) -> Resident:
-        if resident.room_oid not in self.residents:
-            self.residents[resident.room_oid] = []
-        self.residents[resident.room_oid].append(resident.oid)
+        if resident.room_id not in self.residents:
+            self.residents[resident.room_id] = []
+        self.residents[resident.room_id].append(resident.user_id)
         return resident
 
     async def get_by_uuid(self, uuid: str) -> Optional[Resident]:
         for room_oid in self.residents:
             if uuid in self.residents[room_oid]:
-                return Resident(oid=uuid, room_oid=room_oid)
+                return Resident(user_id=uuid, room_id=room_oid)
         return None
 
     async def get_by_room_uuid(self, room_uuid: str) -> list[Resident]:
         if room_uuid in self.residents:
             return [
-                Resident(oid=resident_uuid, room_oid=room_uuid)
+                Resident(user_id=resident_uuid, room_id=room_uuid)
                 for resident_uuid in self.residents[room_uuid]
             ]
         return []
