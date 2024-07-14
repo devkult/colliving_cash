@@ -98,9 +98,9 @@ class JoinRoomCommandHandler(CommandHandler[JoinRoomCommand, None]):
         residents = await self.resident_repository.get_by_room_uuid(room.oid)
         if len(residents) >= room.capacity:
             raise RoomIsFullException(room.oid)
-
+        
         if user.oid in [resident.user_id for resident in residents]:
             raise UserAlreadyInRoomException(command.user_oid, room.oid)
-
+        
         resident = Resident.create(user_id=command.user_oid, room_id=command.room_oid)
         return await self.resident_repository.create(resident)
