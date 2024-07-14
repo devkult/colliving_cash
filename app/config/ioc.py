@@ -90,8 +90,4 @@ class MyProvider(Provider):
 
 @lru_cache(1)
 def init_container() -> AsyncContainer:
-    return _init_container()
-
-
-def _init_container() -> AsyncContainer:
     return make_async_container(MyProvider())

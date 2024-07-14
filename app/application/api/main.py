@@ -1,7 +1,7 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from dishka.integrations.fastapi import setup_dishka
-from logic.init import init_container
+from config.ioc import init_container
 from logic.mediator import Mediator
 from application.api.colliving import router as api_router
 

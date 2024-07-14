@@ -1,6 +1,6 @@
 from dishka import AsyncContainer, make_async_container, provide
 
-from logic.init import MyProvider
+from config.ioc import MyProvider
 from gateways.repositories.memory import (
     MemoryHouseRepository,
     MemoryResidentRepository,
