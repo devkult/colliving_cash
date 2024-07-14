@@ -9,7 +9,7 @@ from logic.interfaces.repository import (
     RoomRepository,
     UserRepository,
 )
-from tests.fixtures import init_dummy_container
+from .fixtures import init_dummy_container
 
 
 @fixture()
