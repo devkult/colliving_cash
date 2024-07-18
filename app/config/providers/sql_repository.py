@@ -6,7 +6,7 @@ from logic.interfaces.repository import (
     HouseRepository,
     ResidentRepository,
     RoomRepository,
-    UserRepository
+    UserRepository,
 )
 
 from .base_provider import MyProvider
@@ -16,17 +16,13 @@ class SqlRepositoryProvider(MyProvider):
     scope = Scope.REQUEST
 
     @provide
-    async def get_house(self, session: AsyncSession) -> HouseRepository:
-        ...
+    async def get_house(self, session: AsyncSession) -> HouseRepository: ...
 
     @provide
-    async def get_user(self, session: AsyncSession) -> UserRepository:
-        ...
+    async def get_user(self, session: AsyncSession) -> UserRepository: ...
 
     @provide
-    async def get_room(self, session: AsyncSession) -> RoomRepository:
-        ...
+    async def get_room(self, session: AsyncSession) -> RoomRepository: ...
 
     @provide
-    async def get_resident(self, session: AsyncSession) -> ResidentRepository:
-        ...
+    async def get_resident(self, session: AsyncSession) -> ResidentRepository: ...

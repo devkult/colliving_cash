@@ -7,7 +7,13 @@ from logic.commands.colliving import (
     CreateUserCommand,
     JoinRoomCommand,
 )
-from logic.exceptions.colliving import HouseNotFoundException, UserNotFoundException, RoomNotFoundException, RoomIsFullException, UserAlreadyInRoomException
+from logic.exceptions.colliving import (
+    HouseNotFoundException,
+    UserNotFoundException,
+    RoomNotFoundException,
+    RoomIsFullException,
+    UserAlreadyInRoomException,
+)
 from logic.interfaces.repository import HouseRepository, ResidentRepository
 from logic.mediator import Mediator
 
@@ -74,22 +80,13 @@ async def test_create_room_with_non_existing_house(
 
 
 @pytest.mark.asyncio
-async def test_join_room_with_user_not_exists(
-    mediator: Mediator, faker: Faker
-) -> None:
+async def test_join_room_with_user_not_exists(mediator: Mediator, faker: Faker) -> None:
     with pytest.raises(UserNotFoundException):
-        await mediator.handle_command(
-            JoinRoomCommand(
-                faker.uuid4(),
-                faker.uuid4()
-            )
-        )
+        await mediator.handle_command(JoinRoomCommand(faker.uuid4(), faker.uuid4()))
 
 
 @pytest.mark.asyncio
-async def test_join_room_with_room_not_exists(
-    mediator: Mediator, faker: Faker
-) -> None:
+async def test_join_room_with_room_not_exists(mediator: Mediator, faker: Faker) -> None:
     user, *_ = await mediator.handle_command(CreateUserCommand(name=faker.name()))
 
     with pytest.raises(RoomNotFoundException):
@@ -102,34 +99,20 @@ async def test_join_room_with_room_not_exists(
 
 
 @pytest.mark.asyncio
-async def test_join_room_with_room_is_full(
-    mediator: Mediator, faker: Faker
-) -> None:
+async def test_join_room_with_room_is_full(mediator: Mediator, faker: Faker) -> None:
     user, *_ = await mediator.handle_command(CreateUserCommand(name=faker.name()))
     user2, *_ = await mediator.handle_command(CreateUserCommand(name=faker.name()))
     house, *_ = await mediator.handle_command(
         CreateHouseCommand(name=faker.name(), owner_uuid=user.oid)
     )
     room, *_ = await mediator.handle_command(
-        CreateRoomCommand(
-            name=faker.name(), house_uuid=house.oid, capacity=1
-        )
+        CreateRoomCommand(name=faker.name(), house_uuid=house.oid, capacity=1)
     )
 
-    await mediator.handle_command(
-        JoinRoomCommand(
-            user2.oid,
-            room.oid
-        )
-    )
+    await mediator.handle_command(JoinRoomCommand(user2.oid, room.oid))
 
     with pytest.raises(RoomIsFullException):
-        await mediator.handle_command(
-            JoinRoomCommand(
-                user.oid,
-                room.oid
-            )
-        )
+        await mediator.handle_command(JoinRoomCommand(user.oid, room.oid))
 
 
 @pytest.mark.asyncio
@@ -141,25 +124,13 @@ async def test_join_room_with_user_already_in_room(
         CreateHouseCommand(name=faker.name(), owner_uuid=user.oid)
     )
     room, *_ = await mediator.handle_command(
-        CreateRoomCommand(
-            name=faker.name(), house_uuid=house.oid, capacity=5
-        )
+        CreateRoomCommand(name=faker.name(), house_uuid=house.oid, capacity=5)
     )
 
-    await mediator.handle_command(
-        JoinRoomCommand(
-            user.oid,
-            room.oid
-        )
-    )
+    await mediator.handle_command(JoinRoomCommand(user.oid, room.oid))
 
     with pytest.raises(UserAlreadyInRoomException):
-        await mediator.handle_command(
-            JoinRoomCommand(
-                user.oid,
-                room.oid
-            )
-        )
+        await mediator.handle_command(JoinRoomCommand(user.oid, room.oid))
 
 
 @pytest.mark.asyncio
@@ -171,17 +142,10 @@ async def test_join_room_success(
         CreateHouseCommand(name=faker.name(), owner_uuid=user.oid)
     )
     room, *_ = await mediator.handle_command(
-        CreateRoomCommand(
-            name=faker.name(), house_uuid=house.oid, capacity=5
-        )
+        CreateRoomCommand(name=faker.name(), house_uuid=house.oid, capacity=5)
     )
 
-    await mediator.handle_command(
-        JoinRoomCommand(
-            user.oid,
-            room.oid
-        )
-    )
+    await mediator.handle_command(JoinRoomCommand(user.oid, room.oid))
 
     residents = await resident_repository.get_by_room_uuid(room.oid)
 

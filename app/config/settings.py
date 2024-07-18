@@ -10,9 +10,7 @@ class Config(BaseSettings):
     db_port: str
     db_database: str
 
-    model_config = SettingsConfigDict(
-        env_file=".env"
-    )
+    model_config = SettingsConfigDict(env_file=".env")
 
 
 settings = Config()
