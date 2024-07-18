@@ -5,6 +5,7 @@ from config.ioc import init_container
 from logic.mediator import Mediator
 from application.api.colliving import router as api_router
 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     container = init_container()
@@ -27,7 +28,7 @@ def create_app() -> FastAPI:
     )
 
     app.include_router(api_router, prefix="/api")
-    
+
     container = init_container()
     setup_dishka(container, app)
 
