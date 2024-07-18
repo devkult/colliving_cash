@@ -4,6 +4,8 @@ from dishka import Provider, Scope, provide
 
 from sqlalchemy.ext.asyncio import AsyncSession, AsyncEngine, async_sessionmaker, create_async_engine
 
+from config.settings import settings
+
 
 class DatabaseProvider(Provider):
     scope = Scope.APP
@@ -12,7 +14,7 @@ class DatabaseProvider(Provider):
     def get_engine(self) -> AsyncEngine:
         # TODO: сделать Settings(BaseSettings) и тут вместо "url"  ;)
         return create_async_engine(
-            "url",
+            f"{settings.db_dialect}+{settings.db_driver}://{settings.db_username}:{settings.db_password}@{settings.db_host}:{settings.db_port}/{settings.db_database}",
             echo=False,
             pool_recycle=180
         )
