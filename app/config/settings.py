@@ -11,9 +11,8 @@ class Config(BaseSettings):
     db_database: str
 
     model_config = SettingsConfigDict(
-        env_file="path_to_.env"
+        env_file=".env"
     )
-    # TODO: Поставить норм путь ;)
 
 
 settings = Config()

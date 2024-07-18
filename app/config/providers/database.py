@@ -12,7 +12,6 @@ class DatabaseProvider(Provider):
 
     @provide
     def get_engine(self) -> AsyncEngine:
-        # TODO: сделать Settings(BaseSettings) и тут вместо "url"  ;)
         return create_async_engine(
             f"{settings.db_dialect}+{settings.db_driver}://{settings.db_username}:{settings.db_password}@{settings.db_host}:{settings.db_port}/{settings.db_database}",
             echo=False,
