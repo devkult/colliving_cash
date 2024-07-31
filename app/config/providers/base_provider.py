@@ -1,5 +1,5 @@
 from dishka import Provider, Scope, provide
-
+from sqlalchemy.ext.asyncio import AsyncSession
 from logic.commands.colliving import (
     CreateHouseCommand,
     CreateHouseCommandHandler,
@@ -16,6 +16,7 @@ from logic.interfaces.repository import (
     RoomRepository,
     UserRepository,
 )
+from logic.interfaces.uow import AsyncUnitOfWork
 from logic.mediator import Mediator
 
 
@@ -23,41 +24,35 @@ class MyProvider(Provider):
     scope = Scope.REQUEST
 
     @provide
-    async def get_user_repository(self) -> UserRepository:
-        pass
-
-    @provide
-    async def get_house_repository(self) -> HouseRepository:
-        pass
-
-    @provide
-    async def get_room_repository(self) -> RoomRepository:
-        pass
-
-    @provide
-    async def get_resident_repository(self) -> ResidentRepository:
-        pass
+    async def get_uow(self, session: AsyncSession) -> AsyncUnitOfWork:
+        return session
 
     @provide
     async def get_create_user_command_handler(
-        self, user_repository: UserRepository
+        self, uow: AsyncUnitOfWork, user_repository: UserRepository
     ) -> CreateUserCommandHandler:
-        return CreateUserCommandHandler(user_repository=user_repository)
+        return CreateUserCommandHandler(uow=uow, user_repository=user_repository)
 
     @provide
     async def get_create_house_command_handler(
-        self, house_repository: HouseRepository, user_repository: UserRepository
+        self,
+        uow: AsyncUnitOfWork,
+        house_repository: HouseRepository,
+        user_repository: UserRepository,
     ) -> CreateHouseCommandHandler:
         return CreateHouseCommandHandler(
-            house_repository=house_repository, user_repository=user_repository
+            uow=uow, house_repository=house_repository, user_repository=user_repository
         )
 
     @provide
     async def get_create_room_command_handler(
-        self, room_repository: RoomRepository, house_repository: HouseRepository
+        self,
+        uow: AsyncUnitOfWork,
+        room_repository: RoomRepository,
+        house_repository: HouseRepository,
     ) -> CreateRoomCommandHandler:
         return CreateRoomCommandHandler(
-            room_repository=room_repository, house_repository=house_repository
+            uow=uow, room_repository=room_repository, house_repository=house_repository
         )
 
     @provide

@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import (
     async_sessionmaker,
     create_async_engine,
 )
-
+#TODO: Засунуть в IOC
 from config.settings import settings
 
 
@@ -18,7 +18,7 @@ class DatabaseProvider(Provider):
     @provide
     def get_engine(self) -> AsyncEngine:
         return create_async_engine(
-            f"{settings.db_dialect}+{settings.db_driver}://{settings.db_username}:{settings.db_password}@{settings.db_host}:{settings.db_port}/{settings.db_database}",
+            f"{settings.db.url}",
             echo=False,
             pool_recycle=180,
         )

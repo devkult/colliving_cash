@@ -11,7 +11,7 @@ UserId = str
 class MemoryResidentRepository(ResidentRepository):
     residents: dict[RoomId, list[UserId]] = {}
 
-    async def create(self, resident: Resident) -> Resident:
+    async def add(self, resident: Resident) -> Resident:
         if resident.room_id not in self.residents:
             self.residents[resident.room_id] = []
         self.residents[resident.room_id].append(resident.user_id)

@@ -7,7 +7,7 @@ from logic.interfaces.repository import HouseRepository
 class MemoryHouseRepository(HouseRepository):
     houses: list[House] = []
 
-    async def create(self, house: House) -> House:
+    async def add(self, house: House) -> House:
         self.houses.append(house)
         return house
 

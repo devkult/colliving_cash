@@ -8,7 +8,7 @@ from logic.interfaces.repository import UserRepository
 class MemoryUserRepository(UserRepository):
     users: list[User] = []
 
-    async def create(self, user: User) -> User:
+    async def add(self, user: User) -> User:
         self.users.append(user)
         return user
 

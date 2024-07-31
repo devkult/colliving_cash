@@ -8,7 +8,7 @@ from logic.interfaces.repository import RoomRepository
 class MemoryRoomRepository(RoomRepository):
     rooms: list[Room] = []
 
-    async def create(self, room: Room) -> Room:
+    async def add(self, room: Room) -> Room:
         self.rooms.append(room)
         return room
 
