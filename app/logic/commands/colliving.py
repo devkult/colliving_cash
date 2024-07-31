@@ -15,6 +15,7 @@ from logic.interfaces.repository import (
     RoomRepository,
     UserRepository,
 )
+from logic.interfaces.uow import AsyncUnitOfWork
 
 
 @dataclass(frozen=True)
@@ -24,11 +25,14 @@ class CreateUserCommand(BaseCommand):
 
 @dataclass
 class CreateUserCommandHandler(CommandHandler[CreateUserCommand, User]):
+    uow: AsyncUnitOfWork
     user_repository: UserRepository
 
     async def handle(self, command: CreateUserCommand) -> User:
         user = User.create(name=command.name)
-        return await self.user_repository.create(user)
+        user = await self.user_repository.add(user)
+        await self.uow.commit()
+        return user
 
 
 @dataclass(frozen=True)
@@ -39,6 +43,7 @@ class CreateHouseCommand(BaseCommand):
 
 @dataclass
 class CreateHouseCommandHandler(CommandHandler[CreateHouseCommand, House]):
+    uow: AsyncUnitOfWork
     house_repository: HouseRepository
     user_repository: UserRepository
 
@@ -48,7 +53,9 @@ class CreateHouseCommandHandler(CommandHandler[CreateHouseCommand, House]):
             raise UserNotFoundException(command.owner_uuid)
 
         house = House.create(name=command.name, owner_id=command.owner_uuid)
-        return await self.house_repository.create(house)
+        house = await self.house_repository.add(house)
+        await self.uow.commit()
+        return house
 
 
 @dataclass(frozen=True)
@@ -71,7 +78,7 @@ class CreateRoomCommandHandler(CommandHandler[CreateRoomCommand, Room]):
         room = Room.create(
             name=command.name, capacity=command.capacity, house_id=command.house_uuid
         )
-        return await self.room_repository.create(room)
+        return await self.room_repository.add(room)
 
 
 @dataclass(frozen=True)
@@ -103,4 +110,4 @@ class JoinRoomCommandHandler(CommandHandler[JoinRoomCommand, None]):
             raise UserAlreadyInRoomException(command.user_oid, room.oid)
 
         resident = Resident.create(user_id=command.user_oid, room_id=command.room_oid)
-        return await self.resident_repository.create(resident)
+        return await self.resident_repository.add(resident)

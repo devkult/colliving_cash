@@ -13,9 +13,22 @@ from logic.interfaces.repository import (
     RoomRepository,
     UserRepository,
 )
+from logic.interfaces.uow import AsyncUnitOfWork
+
+
+class DummySession:
+    async def commit(self):
+        pass
+
+    async def rollback(self):
+        pass
 
 
 class DummyProvider(MyProvider):
+
+    @provide
+    async def get_uow(self) -> AsyncUnitOfWork:
+        return DummySession()
 
     @provide
     async def get_user_repository(self) -> UserRepository:
