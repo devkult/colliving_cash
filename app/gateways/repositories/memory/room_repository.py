@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from typing import Optional
 
 from domain.entities.colliving import Room
-from logic.interfaces.repository import RoomRepository
+from domain.logic.interfaces.repository import RoomRepository
 
 
 class MemoryRoomRepository(RoomRepository):

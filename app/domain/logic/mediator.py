@@ -3,7 +3,7 @@ from typing import DefaultDict, Iterable
 
 from dishka import AsyncContainer
 
-from logic.commands.base import CR, CT, BaseCommand, CommandHandler
+from domain.logic.commands.base import CR, CT, BaseCommand, CommandHandler
 
 
 @dataclass(kw_only=True)

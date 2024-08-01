@@ -1,19 +1,19 @@
 from dishka import AsyncContainer, make_async_container, provide
 
-from config.ioc import MyProvider
+from dependencies.ioc import MyProvider
 from gateways.repositories.memory import (
     MemoryHouseRepository,
     MemoryResidentRepository,
     MemoryRoomRepository,
     MemoryUserRepository,
 )
-from logic.interfaces.repository import (
+from domain.logic.interfaces.repository import (
     HouseRepository,
     ResidentRepository,
     RoomRepository,
     UserRepository,
 )
-from logic.interfaces.uow import AsyncUnitOfWork
+from domain.logic.interfaces.uow import AsyncUnitOfWork
 
 
 class DummySession:
