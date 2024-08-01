@@ -1,5 +1,5 @@
 
-# CollivingCash
+# Colliving Cash
 
 This is a project that helps people living together to honestly distribute expenses and keep records of them.
 
