@@ -8,8 +8,8 @@ from application.api.colliving.users.schemas import (
     CreateUserResponseSchema,
 )
 from domain.exc import ColivingCashException
-from logic.commands.colliving import CreateUserCommand
-from logic.mediator import Mediator
+from domain.logic.commands.colliving import CreateUserCommand
+from domain.logic.mediator import Mediator
 
 router = APIRouter()
 

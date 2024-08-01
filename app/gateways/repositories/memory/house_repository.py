@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from typing import Optional
 from domain.entities.colliving import House
-from logic.interfaces.repository import HouseRepository
+from domain.logic.interfaces.repository import HouseRepository
 
 
 class MemoryHouseRepository(HouseRepository):

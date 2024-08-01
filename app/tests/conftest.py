@@ -2,8 +2,8 @@ from dishka import AsyncContainer
 from faker import Faker
 from pytest import fixture
 
-from logic.mediator import Mediator
-from logic.interfaces.repository import (
+from domain.logic.mediator import Mediator
+from domain.logic.interfaces.repository import (
     HouseRepository,
     ResidentRepository,
     RoomRepository,

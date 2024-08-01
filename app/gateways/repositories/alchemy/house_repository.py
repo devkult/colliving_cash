@@ -5,7 +5,7 @@ from domain.entities.colliving import House
 from gateways.models.colliving import HouseModel
 from gateways.repositories.alchemy.base import SqlAlchemyRepository
 from gateways.datamappers import house_datamapper as datamapper
-from logic.interfaces.repository import HouseRepository
+from domain.logic.interfaces.repository import HouseRepository
 
 
 @dataclass

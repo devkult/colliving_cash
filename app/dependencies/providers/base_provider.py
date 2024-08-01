@@ -1,6 +1,6 @@
 from dishka import Provider, Scope, provide
 from sqlalchemy.ext.asyncio import AsyncSession
-from logic.commands.colliving import (
+from domain.logic.commands.colliving import (
     CreateHouseCommand,
     CreateHouseCommandHandler,
     CreateRoomCommand,
@@ -10,14 +10,14 @@ from logic.commands.colliving import (
     JoinRoomCommand,
     JoinRoomCommandHandler,
 )
-from logic.interfaces.repository import (
+from domain.logic.interfaces.repository import (
     HouseRepository,
     ResidentRepository,
     RoomRepository,
     UserRepository,
 )
-from logic.interfaces.uow import AsyncUnitOfWork
-from logic.mediator import Mediator
+from domain.logic.interfaces.uow import AsyncUnitOfWork
+from domain.logic.mediator import Mediator
 
 
 class MyProvider(Provider):
@@ -47,12 +47,11 @@ class MyProvider(Provider):
     @provide
     async def get_create_room_command_handler(
         self,
-        uow: AsyncUnitOfWork,
         room_repository: RoomRepository,
         house_repository: HouseRepository,
     ) -> CreateRoomCommandHandler:
         return CreateRoomCommandHandler(
-            uow=uow, room_repository=room_repository, house_repository=house_repository
+            room_repository=room_repository, house_repository=house_repository
         )
 
     @provide

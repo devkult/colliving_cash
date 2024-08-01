@@ -1,21 +1,21 @@
 from faker import Faker
 import pytest
 
-from logic.commands.colliving import (
+from domain.logic.commands.colliving import (
     CreateHouseCommand,
     CreateRoomCommand,
     CreateUserCommand,
     JoinRoomCommand,
 )
-from logic.exceptions.colliving import (
+from domain.logic.exceptions.colliving import (
     HouseNotFoundException,
     UserNotFoundException,
     RoomNotFoundException,
     RoomIsFullException,
     UserAlreadyInRoomException,
 )
-from logic.interfaces.repository import HouseRepository, ResidentRepository
-from logic.mediator import Mediator
+from domain.logic.interfaces.repository import HouseRepository, ResidentRepository
+from domain.logic.mediator import Mediator
 
 
 @pytest.mark.asyncio

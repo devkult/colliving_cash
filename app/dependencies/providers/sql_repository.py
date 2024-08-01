@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from gateways.repositories.alchemy.house_repository import SqlAlchemyHouseRepository
 from gateways.repositories.alchemy.user_repository import SqlAlchemyUserRepository
-from logic.interfaces.repository import (
+from domain.logic.interfaces.repository import (
     HouseRepository,
     ResidentRepository,
     RoomRepository,

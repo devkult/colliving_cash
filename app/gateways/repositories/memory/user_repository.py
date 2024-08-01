@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from typing import Optional
 
 from domain.entities.colliving import User
-from logic.interfaces.repository import UserRepository
+from domain.logic.interfaces.repository import UserRepository
 
 
 class MemoryUserRepository(UserRepository):

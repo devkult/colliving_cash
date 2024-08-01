@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from typing import Optional, TypeAlias
 
 from domain.entities.colliving import Resident
-from logic.interfaces.repository import ResidentRepository
+from domain.logic.interfaces.repository import ResidentRepository
 
 RoomId = str
 UserId = str

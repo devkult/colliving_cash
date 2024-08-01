@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from logic.exceptions.base import LogicException
+from domain.logic.exceptions.base import LogicException
 
 
 @dataclass(frozen=True)

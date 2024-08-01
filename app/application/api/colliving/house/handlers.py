@@ -7,8 +7,8 @@ from application.api.colliving.house.schemas import (
     CreateHouseResponseSchema,
 )
 from domain.exc import ColivingCashException
-from logic.commands.colliving import CreateHouseCommand
-from logic.mediator import Mediator
+from domain.logic.commands.colliving import CreateHouseCommand
+from domain.logic.mediator import Mediator
 
 router = APIRouter()
 

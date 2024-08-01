@@ -1,21 +1,21 @@
 from dataclasses import dataclass
 
 from domain.entities.colliving import House, Resident, Room, User
-from logic.commands.base import BaseCommand, CommandHandler
-from logic.exceptions.colliving import (
+from domain.logic.commands.base import BaseCommand, CommandHandler
+from domain.logic.exceptions.colliving import (
     HouseNotFoundException,
     RoomIsFullException,
     RoomNotFoundException,
     UserAlreadyInRoomException,
     UserNotFoundException,
 )
-from logic.interfaces.repository import (
+from domain.logic.interfaces.repository import (
     HouseRepository,
     ResidentRepository,
     RoomRepository,
     UserRepository,
 )
-from logic.interfaces.uow import AsyncUnitOfWork
+from domain.logic.interfaces.uow import AsyncUnitOfWork
 
 
 @dataclass(frozen=True)
