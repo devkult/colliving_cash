@@ -9,6 +9,7 @@ def house_model_to_entity(house: HouseModel) -> House:
         owner_id=house.owner_uuid,
     )
 
+
 def house_entity_to_model(house: House) -> HouseModel:
     return HouseModel(
         uuid=house.oid,

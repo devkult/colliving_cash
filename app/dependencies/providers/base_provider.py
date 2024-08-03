@@ -41,27 +41,34 @@ class MyProvider(Provider):
         user_repository: UserRepository,
     ) -> CreateHouseCommandHandler:
         return CreateHouseCommandHandler(
-            uow=uow, house_repository=house_repository, user_repository=user_repository
+            uow=uow,
+            house_repository=house_repository,
+            user_repository=user_repository,
         )
 
     @provide
     async def get_create_room_command_handler(
         self,
+        uow: AsyncUnitOfWork,
         room_repository: RoomRepository,
         house_repository: HouseRepository,
     ) -> CreateRoomCommandHandler:
         return CreateRoomCommandHandler(
-            room_repository=room_repository, house_repository=house_repository
+            uow=uow,
+            room_repository=room_repository,
+            house_repository=house_repository,
         )
 
     @provide
     async def get_join_room_command_handler(
         self,
+        uow: AsyncUnitOfWork,
         user_repository: UserRepository,
         room_repository: RoomRepository,
         resident_repository: ResidentRepository,
     ) -> JoinRoomCommandHandler:
         return JoinRoomCommandHandler(
+            uow=uow,
             user_repository=user_repository,
             room_repository=room_repository,
             resident_repository=resident_repository,

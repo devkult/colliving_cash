@@ -67,6 +67,7 @@ class CreateRoomCommand(BaseCommand):
 
 @dataclass
 class CreateRoomCommandHandler(CommandHandler[CreateRoomCommand, Room]):
+    uow: AsyncUnitOfWork
     house_repository: HouseRepository
     room_repository: RoomRepository
 
@@ -78,7 +79,12 @@ class CreateRoomCommandHandler(CommandHandler[CreateRoomCommand, Room]):
         room = Room.create(
             name=command.name, capacity=command.capacity, house_id=command.house_uuid
         )
-        return await self.room_repository.add(room)
+
+        room = await self.room_repository.add(room)
+
+        await self.uow.commit()
+
+        return room
 
 
 @dataclass(frozen=True)
@@ -89,6 +95,7 @@ class JoinRoomCommand(BaseCommand):
 
 @dataclass
 class JoinRoomCommandHandler(CommandHandler[JoinRoomCommand, None]):
+    uow: AsyncUnitOfWork
     user_repository: UserRepository
     room_repository: RoomRepository
     resident_repository: ResidentRepository
@@ -110,4 +117,6 @@ class JoinRoomCommandHandler(CommandHandler[JoinRoomCommand, None]):
             raise UserAlreadyInRoomException(command.user_oid, room.oid)
 
         resident = Resident.create(user_id=command.user_oid, room_id=command.room_oid)
-        return await self.resident_repository.add(resident)
+        await self.resident_repository.add(resident)
+
+        await self.uow.commit()
