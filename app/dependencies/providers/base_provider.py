@@ -41,7 +41,9 @@ class MyProvider(Provider):
         user_repository: UserRepository,
     ) -> CreateHouseCommandHandler:
         return CreateHouseCommandHandler(
-            uow=uow, house_repository=house_repository, user_repository=user_repository,
+            uow=uow,
+            house_repository=house_repository,
+            user_repository=user_repository,
         )
 
     @provide
@@ -52,7 +54,9 @@ class MyProvider(Provider):
         house_repository: HouseRepository,
     ) -> CreateRoomCommandHandler:
         return CreateRoomCommandHandler(
-            uow=uow, room_repository=room_repository, house_repository=house_repository,
+            uow=uow,
+            room_repository=room_repository,
+            house_repository=house_repository,
         )
 
     @provide
