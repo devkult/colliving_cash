@@ -5,7 +5,7 @@ from domain.entities.colliving import User
 from gateways.models.colliving import UserModel
 from gateways.repositories.alchemy.base import SqlAlchemyRepository
 from gateways.datamappers import user_datamapper as datamapper
-from domain.logic.interfaces.repository import  UserRepository
+from domain.logic.interfaces.repository import UserRepository
 
 
 @dataclass

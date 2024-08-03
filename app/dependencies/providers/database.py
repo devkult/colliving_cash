@@ -8,7 +8,8 @@ from sqlalchemy.ext.asyncio import (
     async_sessionmaker,
     create_async_engine,
 )
-#TODO: Засунуть в IOC
+
+# TODO: Засунуть в IOC
 from config import settings
 
 

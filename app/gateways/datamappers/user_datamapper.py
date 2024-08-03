@@ -8,6 +8,7 @@ def user_model_to_entity(user: UserModel) -> User:
         name=user.name,
     )
 
+
 def user_entity_to_model(user: User) -> UserModel:
     return UserModel(
         uuid=user.oid,
