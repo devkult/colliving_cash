@@ -1,10 +1,10 @@
 from faker import Faker
 import pytest
 
-from domain.logic.commands.colliving import (
-    CreateHouseCommand,
-    CreateRoomCommand,
-    CreateUserCommand,
+from domain.logic.commands.house import CreateHouseCommand
+from domain.logic.commands.room import CreateRoomCommand
+from domain.logic.commands.user import CreateUserCommand
+from domain.logic.commands.room import (
     JoinRoomCommand,
 )
 from domain.logic.exceptions.colliving import (

@@ -1,6 +1,4 @@
-from dataclasses import dataclass
-
-from domain.entities.colliving import House, Resident, Room, User
+from domain.entities.colliving import Resident, Room
 from domain.logic.commands.base import BaseCommand, CommandHandler
 from domain.logic.exceptions.colliving import (
     HouseNotFoundException,
@@ -18,44 +16,7 @@ from domain.logic.interfaces.repository import (
 from domain.logic.interfaces.uow import AsyncUnitOfWork
 
 
-@dataclass(frozen=True)
-class CreateUserCommand(BaseCommand):
-    name: str
-
-
-@dataclass
-class CreateUserCommandHandler(CommandHandler[CreateUserCommand, User]):
-    uow: AsyncUnitOfWork
-    user_repository: UserRepository
-
-    async def handle(self, command: CreateUserCommand) -> User:
-        user = User.create(name=command.name)
-        user = await self.user_repository.add(user)
-        await self.uow.commit()
-        return user
-
-
-@dataclass(frozen=True)
-class CreateHouseCommand(BaseCommand):
-    name: str
-    owner_uuid: str
-
-
-@dataclass
-class CreateHouseCommandHandler(CommandHandler[CreateHouseCommand, House]):
-    uow: AsyncUnitOfWork
-    house_repository: HouseRepository
-    user_repository: UserRepository
-
-    async def handle(self, command: CreateHouseCommand) -> House:
-        user = await self.user_repository.get_by_uuid(command.owner_uuid)
-        if user is None:
-            raise UserNotFoundException(command.owner_uuid)
-
-        house = House.create(name=command.name, owner_id=command.owner_uuid)
-        house = await self.house_repository.add(house)
-        await self.uow.commit()
-        return house
+from dataclasses import dataclass
 
 
 @dataclass(frozen=True)
