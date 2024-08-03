@@ -55,13 +55,13 @@ class JoinRoomCommand(BaseCommand):
 
 
 @dataclass
-class JoinRoomCommandHandler(CommandHandler[JoinRoomCommand, None]):
+class JoinRoomCommandHandler(CommandHandler[JoinRoomCommand, Resident]):
     uow: AsyncUnitOfWork
     user_repository: UserRepository
     room_repository: RoomRepository
     resident_repository: ResidentRepository
 
-    async def handle(self, command: JoinRoomCommand) -> None:
+    async def handle(self, command: JoinRoomCommand) -> Resident:
         user = await self.user_repository.get_by_uuid(command.user_oid)
         if user is None:
             raise UserNotFoundException(command.user_oid)
@@ -81,3 +81,5 @@ class JoinRoomCommandHandler(CommandHandler[JoinRoomCommand, None]):
         await self.resident_repository.add(resident)
 
         await self.uow.commit()
+
+        return resident

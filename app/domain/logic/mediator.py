@@ -21,9 +21,6 @@ class Mediator:
     async def handle_command(self, command: BaseCommand) -> Iterable[CR]:
         command_type = type(command)
         handlers = self.commands_map.get(command_type)
-        if not handlers:
-            # TODO: Raise an exception + log
-            return
 
         async with self.container() as container_r:
             handlers = [await container_r.get(handler) for handler in handlers]
