@@ -1,14 +1,14 @@
 from dishka import Provider, Scope, provide
 from sqlalchemy.ext.asyncio import AsyncSession
-from domain.logic.commands.colliving import (
-    CreateHouseCommand,
-    CreateHouseCommandHandler,
+from domain.logic.commands.house import CreateHouseCommand, CreateHouseCommandHandler
+from domain.logic.commands.room import (
     CreateRoomCommand,
     CreateRoomCommandHandler,
-    CreateUserCommand,
-    CreateUserCommandHandler,
-    JoinRoomCommand,
     JoinRoomCommandHandler,
+)
+from domain.logic.commands.user import CreateUserCommand, CreateUserCommandHandler
+from domain.logic.commands.room import (
+    JoinRoomCommand,
 )
 from domain.logic.interfaces.repository import (
     HouseRepository,
