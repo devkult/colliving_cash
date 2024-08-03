@@ -67,9 +67,9 @@ class CreateRoomCommand(BaseCommand):
 
 @dataclass
 class CreateRoomCommandHandler(CommandHandler[CreateRoomCommand, Room]):
+    uow: AsyncUnitOfWork
     house_repository: HouseRepository
     room_repository: RoomRepository
-    uow: AsyncUnitOfWork
 
     async def handle(self, command: CreateRoomCommand) -> Room:
         house = await self.house_repository.get_by_uuid(command.house_uuid)
@@ -95,10 +95,10 @@ class JoinRoomCommand(BaseCommand):
 
 @dataclass
 class JoinRoomCommandHandler(CommandHandler[JoinRoomCommand, None]):
+    uow: AsyncUnitOfWork
     user_repository: UserRepository
     room_repository: RoomRepository
     resident_repository: ResidentRepository
-    uow: AsyncUnitOfWork
 
     async def handle(self, command: JoinRoomCommand) -> None:
         user = await self.user_repository.get_by_uuid(command.user_oid)

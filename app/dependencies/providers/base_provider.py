@@ -52,7 +52,7 @@ class MyProvider(Provider):
         house_repository: HouseRepository,
     ) -> CreateRoomCommandHandler:
         return CreateRoomCommandHandler(
-            room_repository=room_repository, house_repository=house_repository, uow=uow
+            uow=uow, room_repository=room_repository, house_repository=house_repository
         )
 
     @provide
@@ -64,10 +64,10 @@ class MyProvider(Provider):
         resident_repository: ResidentRepository,
     ) -> JoinRoomCommandHandler:
         return JoinRoomCommandHandler(
+            uow=uow,
             user_repository=user_repository,
             room_repository=room_repository,
             resident_repository=resident_repository,
-            uow=uow,
         )
 
     @provide(scope=Scope.APP)
