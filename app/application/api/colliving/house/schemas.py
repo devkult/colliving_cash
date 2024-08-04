@@ -33,7 +33,7 @@ class GetHouseResidentsResponseSchema(BaseModel):
 
     @classmethod
     def from_entity(cls, residents: list[Resident]):
-        return cls(residents=[resident.user_id for resident in residents])
+        return cls(residents=[resident.oid for resident in residents])
 
 
 class JoinHouseRequestSchema(BaseModel):
