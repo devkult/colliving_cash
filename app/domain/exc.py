@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 
-@dataclass(frozen=True)
+@dataclass(eq=False)
 class ColivingCashException(Exception):
     @property
     def message(self) -> str:

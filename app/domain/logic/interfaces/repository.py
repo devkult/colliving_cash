@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Optional
 
-from domain.entities.colliving import House, Resident, Room, User
+from domain.entities.colliving import House, Resident, User
 
 
 class HouseRepository(ABC):
@@ -20,14 +20,6 @@ class UserRepository(ABC):
     async def get_by_uuid(self, uuid: str) -> Optional[User]: ...
 
 
-class RoomRepository(ABC):
-    @abstractmethod
-    async def add(self, room: Room) -> Room: ...
-
-    @abstractmethod
-    async def get_by_uuid(self, uuid: str) -> Optional[Room]: ...
-
-
 class ResidentRepository(ABC):
     @abstractmethod
     async def add(self, resident: Resident) -> Resident: ...
@@ -36,4 +28,9 @@ class ResidentRepository(ABC):
     async def get_by_uuid(self, uuid: str) -> Optional[Resident]: ...
 
     @abstractmethod
-    async def get_by_room_uuid(self, room_uuid: str) -> list[Resident]: ...
+    async def get_by_house_uuid(self, house_uuid: str) -> list[Resident]: ...
+
+    @abstractmethod
+    async def get_by_user_and_house_uuid(
+        self, user_uuid: str, house_uuid: str
+    ) -> Optional[Resident]: ...

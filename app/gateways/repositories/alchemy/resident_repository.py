@@ -24,12 +24,25 @@ class SqlAlchemyResidentRepository(SqlAlchemyRepository, ResidentRepository):
             return None
         return datamapper.resident_model_to_entity(resident_model)
 
-    async def get_by_room_uuid(self, room_uuid: str) -> list[Resident]:
+    async def get_by_house_uuid(self, house_uuid: str) -> list[Resident]:
         result = await self.session.execute(
-            select(ResidentModel).where(ResidentModel.room_uuid == room_uuid)
+            select(ResidentModel).where(ResidentModel.house_uuid == house_uuid)
         )
         resident_models = result.scalars().all()
         return [
             datamapper.resident_model_to_entity(resident_model)
             for resident_model in resident_models
         ]
+
+    async def get_by_user_and_house_uuid(
+        self, user_uuid: str, house_uuid: str
+    ) -> Optional[Resident]:
+        result = await self.session.execute(
+            select(ResidentModel)
+            .where(ResidentModel.user_uuid == user_uuid)
+            .where(ResidentModel.house_uuid == house_uuid)
+        )
+        resident_model = result.scalars().first()
+        if resident_model is None:
+            return None
+        return datamapper.resident_model_to_entity(resident_model)

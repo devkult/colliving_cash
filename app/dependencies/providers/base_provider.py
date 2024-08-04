@@ -1,23 +1,25 @@
 from dishka import Provider, Scope, provide
 from sqlalchemy.ext.asyncio import AsyncSession
-from domain.logic.commands.house import CreateHouseCommand, CreateHouseCommandHandler
-from domain.logic.commands.room import (
-    CreateRoomCommand,
-    CreateRoomCommandHandler,
-    JoinRoomCommandHandler,
+from domain.logic.commands.house import (
+    CreateHouseCommand,
+    CreateHouseCommandHandler,
+    JoinHouseCommand,
+    JoinHouseCommandHandler,
 )
 from domain.logic.commands.user import CreateUserCommand, CreateUserCommandHandler
-from domain.logic.commands.room import (
-    JoinRoomCommand,
-)
 from domain.logic.interfaces.repository import (
     HouseRepository,
     ResidentRepository,
-    RoomRepository,
     UserRepository,
 )
 from domain.logic.interfaces.uow import AsyncUnitOfWork
 from domain.logic.mediator import Mediator
+from domain.logic.queries.house import (
+    GetHouseQuery,
+    GetHouseQueryHandler,
+    GetHouseResidentsQuery,
+    GetHouseResidentsQueryHandler,
+)
 
 
 class MyProvider(Provider):
@@ -47,31 +49,34 @@ class MyProvider(Provider):
         )
 
     @provide
-    async def get_create_room_command_handler(
+    async def get_join_house_command_handler(
         self,
         uow: AsyncUnitOfWork,
-        room_repository: RoomRepository,
         house_repository: HouseRepository,
-    ) -> CreateRoomCommandHandler:
-        return CreateRoomCommandHandler(
+        user_repository: UserRepository,
+        residents_repository: ResidentRepository,
+    ) -> JoinHouseCommandHandler:
+        return JoinHouseCommandHandler(
             uow=uow,
-            room_repository=room_repository,
             house_repository=house_repository,
+            user_repository=user_repository,
+            residents_repository=residents_repository,
         )
 
     @provide
-    async def get_join_room_command_handler(
+    async def get_get_house_query_handler(
+        self, house_repository: HouseRepository
+    ) -> GetHouseQueryHandler:
+        return GetHouseQueryHandler(house_repository=house_repository)
+
+    @provide
+    async def get_get_house_residents_query_handler(
         self,
-        uow: AsyncUnitOfWork,
-        user_repository: UserRepository,
-        room_repository: RoomRepository,
-        resident_repository: ResidentRepository,
-    ) -> JoinRoomCommandHandler:
-        return JoinRoomCommandHandler(
-            uow=uow,
-            user_repository=user_repository,
-            room_repository=room_repository,
-            resident_repository=resident_repository,
+        house_repository: HouseRepository,
+        residents_repository: ResidentRepository,
+    ) -> GetHouseResidentsQueryHandler:
+        return GetHouseResidentsQueryHandler(
+            house_repository=house_repository, residents_repository=residents_repository
         )
 
     @provide(scope=Scope.APP)
@@ -79,9 +84,12 @@ class MyProvider(Provider):
         self,
     ) -> Mediator:
         mediator = Mediator()
+
         mediator.register_command(CreateUserCommand, [CreateUserCommandHandler])
-        mediator.register_command(JoinRoomCommand, [JoinRoomCommandHandler])
-        mediator.register_command(CreateRoomCommand, [CreateRoomCommandHandler])
         mediator.register_command(CreateHouseCommand, [CreateHouseCommandHandler])
+        mediator.register_command(JoinHouseCommand, [JoinHouseCommandHandler])
+
+        mediator.register_query(GetHouseQuery, GetHouseQueryHandler)
+        mediator.register_query(GetHouseResidentsQuery, GetHouseResidentsQueryHandler)
 
         return mediator

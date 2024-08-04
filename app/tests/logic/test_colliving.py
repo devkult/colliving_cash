@@ -1,21 +1,16 @@
 from faker import Faker
 import pytest
 
-from domain.logic.commands.house import CreateHouseCommand
-from domain.logic.commands.room import CreateRoomCommand
+from domain.logic.commands.house import CreateHouseCommand, JoinHouseCommand
 from domain.logic.commands.user import CreateUserCommand
-from domain.logic.commands.room import (
-    JoinRoomCommand,
-)
 from domain.logic.exceptions.colliving import (
     HouseNotFoundException,
+    UserAlreadyJoinedHouseException,
     UserNotFoundException,
-    RoomNotFoundException,
-    RoomIsFullException,
-    UserAlreadyInRoomException,
 )
-from domain.logic.interfaces.repository import HouseRepository, ResidentRepository
+from domain.logic.interfaces.repository import HouseRepository
 from domain.logic.mediator import Mediator
+from domain.logic.queries.house import GetHouseQuery, GetHouseResidentsQuery
 
 
 @pytest.mark.asyncio
@@ -48,105 +43,93 @@ async def test_create_house_with_non_existing_user(
 
 
 @pytest.mark.asyncio
-async def test_create_room(
-    mediator: Mediator, faker: Faker, room_repository: HouseRepository
-) -> None:
+async def test_join_house(mediator: Mediator, faker: Faker) -> None:
     user, *_ = await mediator.handle_command(CreateUserCommand(name=faker.name()))
     house, *_ = await mediator.handle_command(
         CreateHouseCommand(name=faker.name(), owner_uuid=user.oid)
     )
-    room, *_ = await mediator.handle_command(
-        CreateRoomCommand(
-            name=faker.name(), house_uuid=house.oid, capacity=faker.random_int(1, 10)
-        )
+    resident, *_ = await mediator.handle_command(
+        JoinHouseCommand(house_uuid=house.oid, user_uuid=user.oid)
     )
-    assert room
-    assert room.house_id == house.oid
-    assert await room_repository.get_by_uuid(room.oid)
+    assert resident
+    assert resident.user_id == user.oid
+    assert resident.house_id == house.oid
 
 
 @pytest.mark.asyncio
-async def test_create_room_with_non_existing_house(
-    mediator: Mediator, faker: Faker
-) -> None:
+async def test_join_non_existing_house(mediator: Mediator, faker: Faker) -> None:
+    user, *_ = await mediator.handle_command(CreateUserCommand(name=faker.name()))
     with pytest.raises(HouseNotFoundException):
         await mediator.handle_command(
-            CreateRoomCommand(
-                name=faker.name(),
-                house_uuid=faker.uuid4(),
-                capacity=faker.random_int(1, 10),
-            )
+            JoinHouseCommand(house_uuid=faker.uuid4(), user_uuid=user.oid)
         )
 
 
 @pytest.mark.asyncio
-async def test_join_room_with_user_not_exists(mediator: Mediator, faker: Faker) -> None:
-    with pytest.raises(UserNotFoundException):
-        await mediator.handle_command(JoinRoomCommand(faker.uuid4(), faker.uuid4()))
-
-
-@pytest.mark.asyncio
-async def test_join_room_with_room_not_exists(mediator: Mediator, faker: Faker) -> None:
+async def test_join_non_existing_user(mediator: Mediator, faker: Faker) -> None:
     user, *_ = await mediator.handle_command(CreateUserCommand(name=faker.name()))
-
-    with pytest.raises(RoomNotFoundException):
-        await mediator.handle_command(
-            JoinRoomCommand(
-                user.oid,
-                faker.uuid4(),
-            )
-        )
-
-
-@pytest.mark.asyncio
-async def test_join_room_with_room_is_full(mediator: Mediator, faker: Faker) -> None:
-    user, *_ = await mediator.handle_command(CreateUserCommand(name=faker.name()))
-    user2, *_ = await mediator.handle_command(CreateUserCommand(name=faker.name()))
     house, *_ = await mediator.handle_command(
         CreateHouseCommand(name=faker.name(), owner_uuid=user.oid)
     )
-    room, *_ = await mediator.handle_command(
-        CreateRoomCommand(name=faker.name(), house_uuid=house.oid, capacity=1)
-    )
-
-    await mediator.handle_command(JoinRoomCommand(user2.oid, room.oid))
-
-    with pytest.raises(RoomIsFullException):
-        await mediator.handle_command(JoinRoomCommand(user.oid, room.oid))
+    with pytest.raises(UserNotFoundException):
+        await mediator.handle_command(
+            JoinHouseCommand(house_uuid=house.oid, user_uuid=faker.uuid4())
+        )
 
 
 @pytest.mark.asyncio
-async def test_join_room_with_user_already_in_room(
+async def test_join_already_joined_house(mediator: Mediator, faker: Faker) -> None:
+    user, *_ = await mediator.handle_command(CreateUserCommand(name=faker.name()))
+    house, *_ = await mediator.handle_command(
+        CreateHouseCommand(name=faker.name(), owner_uuid=user.oid)
+    )
+    resident, *_ = await mediator.handle_command(
+        JoinHouseCommand(house_uuid=house.oid, user_uuid=user.oid)
+    )
+    with pytest.raises(UserAlreadyJoinedHouseException):
+        await mediator.handle_command(
+            JoinHouseCommand(house_uuid=house.oid, user_uuid=user.oid)
+        )
+
+
+@pytest.mark.asyncio
+async def test_get_house_residents(mediator: Mediator, faker: Faker) -> None:
+    user, *_ = await mediator.handle_command(CreateUserCommand(name=faker.name()))
+    house, *_ = await mediator.handle_command(
+        CreateHouseCommand(name=faker.name(), owner_uuid=user.oid)
+    )
+    resident, *_ = await mediator.handle_command(
+        JoinHouseCommand(house_uuid=house.oid, user_uuid=user.oid)
+    )
+    residents = await mediator.handle_query(
+        GetHouseResidentsQuery(house_uuid=house.oid)
+    )
+    assert resident in residents
+
+
+@pytest.mark.asyncio
+async def test_get_non_existing_house_residents(
     mediator: Mediator, faker: Faker
 ) -> None:
     user, *_ = await mediator.handle_command(CreateUserCommand(name=faker.name()))
     house, *_ = await mediator.handle_command(
         CreateHouseCommand(name=faker.name(), owner_uuid=user.oid)
     )
-    room, *_ = await mediator.handle_command(
-        CreateRoomCommand(name=faker.name(), house_uuid=house.oid, capacity=5)
-    )
-
-    await mediator.handle_command(JoinRoomCommand(user.oid, room.oid))
-
-    with pytest.raises(UserAlreadyInRoomException):
-        await mediator.handle_command(JoinRoomCommand(user.oid, room.oid))
+    with pytest.raises(HouseNotFoundException):
+        await mediator.handle_query(GetHouseResidentsQuery(house_uuid=faker.uuid4()))
 
 
 @pytest.mark.asyncio
-async def test_join_room_success(
-    mediator: Mediator, faker: Faker, resident_repository: ResidentRepository
-) -> None:
+async def test_get_house(mediator: Mediator, faker: Faker) -> None:
     user, *_ = await mediator.handle_command(CreateUserCommand(name=faker.name()))
     house, *_ = await mediator.handle_command(
         CreateHouseCommand(name=faker.name(), owner_uuid=user.oid)
     )
-    room, *_ = await mediator.handle_command(
-        CreateRoomCommand(name=faker.name(), house_uuid=house.oid, capacity=5)
-    )
+    assert await mediator.handle_query(GetHouseQuery(house_uuid=house.oid))
 
-    await mediator.handle_command(JoinRoomCommand(user.oid, room.oid))
 
-    residents = await resident_repository.get_by_room_uuid(room.oid)
-
-    assert user.oid in [resident.user_id for resident in residents]
+@pytest.mark.asyncio
+async def test_get_non_existing_house(mediator: Mediator, faker: Faker) -> None:
+    user, *_ = await mediator.handle_command(CreateUserCommand(name=faker.name()))
+    with pytest.raises(HouseNotFoundException):
+        await mediator.handle_query(GetHouseQuery(house_uuid=faker.uuid4()))
