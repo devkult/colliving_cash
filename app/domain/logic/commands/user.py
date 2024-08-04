@@ -1,5 +1,5 @@
 from domain.entities.colliving import User
-from domain.logic.commands.base import BaseCommand, CommandHandler
+from domain.logic.commands.base import BaseCommand, BaseCommandHandler
 from domain.logic.interfaces.repository import UserRepository
 from domain.logic.interfaces.uow import AsyncUnitOfWork
 
@@ -13,7 +13,7 @@ class CreateUserCommand(BaseCommand):
 
 
 @dataclass
-class CreateUserCommandHandler(CommandHandler[CreateUserCommand, User]):
+class CreateUserCommandHandler(BaseCommandHandler[CreateUserCommand, User]):
     uow: AsyncUnitOfWork
     user_repository: UserRepository
 

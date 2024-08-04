@@ -6,12 +6,10 @@ from gateways.repositories.alchemy.house_repository import SqlAlchemyHouseReposi
 from gateways.repositories.alchemy.resident_repository import (
     SqlAlchemyResidentRepository,
 )
-from gateways.repositories.alchemy.room_repository import SqlAlchemyRoomRepository
 from gateways.repositories.alchemy.user_repository import SqlAlchemyUserRepository
 from domain.logic.interfaces.repository import (
     HouseRepository,
     ResidentRepository,
-    RoomRepository,
     UserRepository,
 )
 
@@ -28,10 +26,6 @@ class SqlRepositoryProvider(MyProvider):
     @provide
     async def get_house_repository(self, session: AsyncSession) -> HouseRepository:
         return SqlAlchemyHouseRepository(session)
-
-    @provide
-    async def get_room_repository(self, session: AsyncSession) -> RoomRepository:
-        return SqlAlchemyRoomRepository(session)
 
     @provide
     async def get_resident_repository(

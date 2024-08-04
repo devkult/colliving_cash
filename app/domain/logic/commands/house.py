@@ -1,7 +1,15 @@
-from domain.entities.colliving import House
-from domain.logic.commands.base import BaseCommand, CommandHandler
-from domain.logic.exceptions.colliving import UserNotFoundException
-from domain.logic.interfaces.repository import HouseRepository, UserRepository
+from domain.entities.colliving import House, Resident
+from domain.logic.commands.base import BaseCommand, BaseCommandHandler
+from domain.logic.exceptions.colliving import (
+    HouseNotFoundException,
+    UserAlreadyJoinedHouseException,
+    UserNotFoundException,
+)
+from domain.logic.interfaces.repository import (
+    HouseRepository,
+    ResidentRepository,
+    UserRepository,
+)
 from domain.logic.interfaces.uow import AsyncUnitOfWork
 
 
@@ -15,7 +23,7 @@ class CreateHouseCommand(BaseCommand):
 
 
 @dataclass
-class CreateHouseCommandHandler(CommandHandler[CreateHouseCommand, House]):
+class CreateHouseCommandHandler(BaseCommandHandler[CreateHouseCommand, House]):
     uow: AsyncUnitOfWork
     house_repository: HouseRepository
     user_repository: UserRepository
@@ -29,3 +37,36 @@ class CreateHouseCommandHandler(CommandHandler[CreateHouseCommand, House]):
         house = await self.house_repository.add(house)
         await self.uow.commit()
         return house
+
+
+@dataclass(frozen=True)
+class JoinHouseCommand(BaseCommand):
+    user_uuid: str
+    house_uuid: str
+
+
+@dataclass
+class JoinHouseCommandHandler(BaseCommandHandler[JoinHouseCommand, Resident]):
+    uow: AsyncUnitOfWork
+    house_repository: HouseRepository
+    user_repository: UserRepository
+    residents_repository: ResidentRepository
+
+    async def handle(self, command: JoinHouseCommand) -> Resident:
+        house = await self.house_repository.get_by_uuid(command.house_uuid)
+        if house is None:
+            raise HouseNotFoundException(command.house_uuid)
+
+        user = await self.user_repository.get_by_uuid(command.user_uuid)
+        if user is None:
+            raise UserNotFoundException(command.user_uuid)
+
+        if await self.residents_repository.get_by_user_and_house_uuid(
+            user_uuid=user.oid, house_uuid=house.oid
+        ):
+            raise UserAlreadyJoinedHouseException(user.oid, house.oid)
+
+        resident = Resident.create(user_id=user.oid, house_id=house.oid)
+        resident = await self.residents_repository.add(resident)
+        await self.uow.commit()
+        return resident

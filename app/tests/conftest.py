@@ -6,7 +6,6 @@ from domain.logic.mediator import Mediator
 from domain.logic.interfaces.repository import (
     HouseRepository,
     ResidentRepository,
-    RoomRepository,
     UserRepository,
 )
 from .fixtures import init_dummy_container
@@ -39,12 +38,6 @@ async def user_repository(container: AsyncContainer) -> UserRepository:
 async def house_repository(container: AsyncContainer) -> HouseRepository:
     async with container() as container_r:
         return await container_r.get(HouseRepository)
-
-
-@fixture()
-async def room_repository(container: AsyncContainer) -> RoomRepository:
-    async with container() as container_r:
-        return await container_r.get(RoomRepository)
 
 
 @fixture()

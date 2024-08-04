@@ -4,29 +4,36 @@ from typing import Optional, TypeAlias
 from domain.entities.colliving import Resident
 from domain.logic.interfaces.repository import ResidentRepository
 
-RoomId = str
+HouseId = str
 UserId = str
 
 
 class MemoryResidentRepository(ResidentRepository):
-    residents: dict[RoomId, list[UserId]] = {}
+    residents: list[Resident] = []
 
     async def add(self, resident: Resident) -> Resident:
-        if resident.room_id not in self.residents:
-            self.residents[resident.room_id] = []
-        self.residents[resident.room_id].append(resident.user_id)
+        self.residents.append(resident)
         return resident
 
     async def get_by_uuid(self, uuid: str) -> Optional[Resident]:
-        for room_oid in self.residents:
-            if uuid in self.residents[room_oid]:
-                return Resident(user_id=uuid, room_id=room_oid)
-        return None
+        return next(
+            (resident for resident in self.residents if resident.user_id == uuid), None
+        )
 
-    async def get_by_room_uuid(self, room_uuid: str) -> list[Resident]:
-        if room_uuid in self.residents:
-            return [
-                Resident(user_id=resident_uuid, room_id=room_uuid)
-                for resident_uuid in self.residents[room_uuid]
-            ]
-        return []
+    async def get_by_house_uuid(self, house_uuid: str) -> list[Resident]:
+        return [
+            resident for resident in self.residents if resident.house_id == house_uuid
+        ]
+
+    async def get_by_user_and_house_uuid(
+        self, user_uuid: str, house_uuid: str
+    ) -> Optional[Resident]:
+        residents_in_house = await self.get_by_house_uuid(house_uuid)
+        return next(
+            (
+                resident
+                for resident in residents_in_house
+                if resident.user_id == user_uuid
+            ),
+            None,
+        )
