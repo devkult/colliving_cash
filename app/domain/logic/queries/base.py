@@ -9,16 +9,14 @@ from typing import (
     TypeVar,
 )
 
-
-@dataclass(frozen=True)
-class BaseQuery(ABC): ...
-
-
-QT = TypeVar("QT", bound=BaseQuery)
-QR = TypeVar("QR", bound=Any)
+QR = TypeVar("R", bound=Any)
 
 
 @dataclass(frozen=True)
-class BaseQueryHandler(ABC, Generic[QT, QR]):
+class BaseQuery(ABC, Generic[QR]): ...
+
+
+@dataclass(frozen=True)
+class BaseQueryHandler(ABC, Generic[QR]):
     @abstractmethod
-    async def handle(self, query: QT) -> QR: ...
+    async def handle(self, query: BaseQuery) -> QR: ...

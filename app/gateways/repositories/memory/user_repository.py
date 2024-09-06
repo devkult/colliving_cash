@@ -2,11 +2,15 @@ from dataclasses import dataclass, field
 from typing import Optional
 
 from domain.entities.colliving import User
-from domain.logic.interfaces.repository import UserRepository
+from domain.interfaces.repository import UserRepository
+from gateways.repositories.memory.base import MemoryRepository
 
 
-class MemoryUserRepository(UserRepository):
-    users: list[User] = []
+class MemoryUserRepository(MemoryRepository,UserRepository):
+    def __init__(self, storage) -> None:
+        super().__init__(storage=storage)
+        self.users: list[User] = self.storage.create_table([], "users")
+
 
     async def add(self, user: User) -> User:
         self.users.append(user)

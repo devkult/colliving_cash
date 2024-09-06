@@ -3,20 +3,20 @@ from typing import Optional
 
 from domain.entities.colliving import House, Resident
 from domain.logic.exceptions.colliving import HouseNotFoundException
-from domain.logic.interfaces.repository import HouseRepository, ResidentRepository
-from domain.logic.queries.base import BaseQueryHandler
+from domain.interfaces.repository import HouseRepository, ResidentRepository
+from domain.logic.queries.base import BaseQueryHandler, BaseQuery
 
 
 @dataclass(frozen=True)
-class GetHouseQuery:
+class GetHouseQuery(BaseQuery[House]):
     house_uuid: str
 
 
 @dataclass(frozen=True)
-class GetHouseQueryHandler(BaseQueryHandler[GetHouseQuery, Optional[House]]):
+class GetHouseQueryHandler(BaseQueryHandler[House]):
     house_repository: HouseRepository
 
-    async def handle(self, query: GetHouseQuery) -> Optional[House]:
+    async def handle(self, query: GetHouseQuery) -> House:
         house = await self.house_repository.get_by_uuid(query.house_uuid)
         if house is None:
             raise HouseNotFoundException(query.house_uuid)
@@ -25,14 +25,12 @@ class GetHouseQueryHandler(BaseQueryHandler[GetHouseQuery, Optional[House]]):
 
 
 @dataclass(frozen=True)
-class GetHouseResidentsQuery:
+class GetHouseResidentsQuery(BaseQuery[list[Resident]]):
     house_uuid: str
 
 
 @dataclass(frozen=True)
-class GetHouseResidentsQueryHandler(
-    BaseQueryHandler[GetHouseResidentsQuery, list[Resident]]
-):
+class GetHouseResidentsQueryHandler(BaseQueryHandler[list[Resident]]):
     house_repository: HouseRepository
     residents_repository: ResidentRepository
 

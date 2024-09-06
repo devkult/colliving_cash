@@ -8,8 +8,8 @@ class CreateUserRequestSchema(BaseModel):
 
 
 class CreateUserResponseSchema(BaseModel):
-    user_uuid: str
+    user_id: str
 
     @classmethod
     def from_entity(cls, user: User):
-        return cls(user_uuid=user.oid)
+        return cls(user_id=user.oid)

@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Self
 
 from domain.entities.base import BaseEntity
 
@@ -13,33 +14,40 @@ class User(BaseEntity):
             name=name,
         )
 
-
-@dataclass
-class Resident(BaseEntity):
-    user_id: str
-    house_id: str
-
-    @classmethod
-    def create(cls, user_id: str, house_id: str) -> "Resident":
-        return cls(user_id=user_id, house_id=house_id)
-
-
-@dataclass
-class Bill(BaseEntity):
-    amount: int
-    title: str
-    description: str
-    user_oid: str
-
-
 @dataclass
 class House(BaseEntity):
     name: str
-    owner_id: str
+    owner: User
 
     @classmethod
-    def create(cls, name: str, owner_id: str) -> "House":
+    def create(cls, name: str, owner: User) -> Self:
         return cls(
             name=name,
-            owner_id=owner_id,
+            owner=owner,
         )
+
+@dataclass
+class Resident(BaseEntity):
+    user: User
+    house: House
+
+    @classmethod
+    def create(cls, user: User, house: House) -> Self:
+        return cls(
+            user=user,
+            house=house,
+        )
+
+
+@dataclass
+class Exchange(BaseEntity):
+    amount: int
+    title: str
+    description: str
+    resident: Resident
+    
+
+class Bill(BaseEntity):
+    exchanges: list[Exchange] 
+    house: House
+

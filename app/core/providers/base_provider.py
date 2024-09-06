@@ -1,4 +1,5 @@
-from dishka import Provider, Scope, provide
+from aiojobs import Scheduler
+from dishka import AsyncContainer, Provider, Scope, provide
 from sqlalchemy.ext.asyncio import AsyncSession
 from domain.logic.commands.house import (
     CreateHouseCommand,
@@ -7,12 +8,12 @@ from domain.logic.commands.house import (
     JoinHouseCommandHandler,
 )
 from domain.logic.commands.user import CreateUserCommand, CreateUserCommandHandler
-from domain.logic.interfaces.repository import (
+from domain.interfaces.repository import (
     HouseRepository,
     ResidentRepository,
     UserRepository,
 )
-from domain.logic.interfaces.uow import AsyncUnitOfWork
+from domain.interfaces.uow import AsyncUnitOfWork
 from domain.logic.mediator import Mediator
 from domain.logic.queries.house import (
     GetHouseQuery,
@@ -24,6 +25,10 @@ from domain.logic.queries.house import (
 
 class MyProvider(Provider):
     scope = Scope.REQUEST
+
+    @provide(scope=Scope.APP)
+    async def get_scheduler(self) -> Scheduler:
+        return Scheduler()
 
     @provide
     async def get_uow(self, session: AsyncSession) -> AsyncUnitOfWork:
@@ -82,8 +87,9 @@ class MyProvider(Provider):
     @provide(scope=Scope.APP)
     async def get_mediator(
         self,
+        container: AsyncContainer,
     ) -> Mediator:
-        mediator = Mediator()
+        mediator = Mediator(container=container)
 
         mediator.register_command(CreateUserCommand, [CreateUserCommandHandler])
         mediator.register_command(CreateHouseCommand, [CreateHouseCommandHandler])
@@ -91,5 +97,5 @@ class MyProvider(Provider):
 
         mediator.register_query(GetHouseQuery, GetHouseQueryHandler)
         mediator.register_query(GetHouseResidentsQuery, GetHouseResidentsQueryHandler)
-
         return mediator
+

@@ -5,26 +5,26 @@ from domain.entities.colliving import House, Resident
 
 class CreateHouseRequestSchema(BaseModel):
     name: str
-    owner_uuid: str
+    owner_id: str
 
 
 class CreateHouseResponseSchema(BaseModel):
-    house_uuid: str
+    house_id: str
 
     @classmethod
     def from_entity(cls, house: House):
-        return cls(house_uuid=house.oid)
+        return cls(house_id=house.oid)
 
 
 class GetHouseResponseSchema(BaseModel):
     name: str
-    owner_uuid: str
+    owner_id: str
 
     @classmethod
     def from_entity(cls, house: House):
         return cls(
             name=house.name,
-            owner_uuid=house.owner_id,
+            owner_id=house.owner.oid,
         )
 
 
@@ -37,13 +37,12 @@ class GetHouseResidentsResponseSchema(BaseModel):
 
 
 class JoinHouseRequestSchema(BaseModel):
-    user_uuid: str
-    house_uuid: str
+    user_id: str
 
 
 class JoinHouseResponseSchema(BaseModel):
-    resident_uuid: str
+    resident_id: str
 
     @classmethod
     def from_entity(cls, resident: Resident):
-        return cls(resident_uuid=resident.user_id)
+        return cls(resident_id=resident.oid)

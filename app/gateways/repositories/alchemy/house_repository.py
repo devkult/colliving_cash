@@ -1,11 +1,12 @@
 from dataclasses import dataclass
 from sqlalchemy import select
+from sqlalchemy.orm import joinedload
 from typing import Optional
 from domain.entities.colliving import House
 from gateways.models.colliving import HouseModel
 from gateways.repositories.alchemy.base import SqlAlchemyRepository
 from gateways.datamappers import house_datamapper as datamapper
-from domain.logic.interfaces.repository import HouseRepository
+from domain.interfaces.repository import HouseRepository
 
 
 @dataclass
@@ -16,10 +17,14 @@ class SqlAlchemyHouseRepository(SqlAlchemyRepository, HouseRepository):
         return house
 
     async def get_by_uuid(self, uuid: str) -> Optional[House]:
-        result = await self.session.execute(
-            select(HouseModel).where(HouseModel.uuid == uuid)
-        )
-        house_model = result.scalars().first()
-        if house_model is None:
-            return None
-        return datamapper.house_model_to_entity(house_model)
+            result = await self.session.execute(
+                select(HouseModel)
+                .options(joinedload(HouseModel.owner))  
+                .where(HouseModel.uuid == uuid)
+            )
+            house_model = result.scalars().first()
+
+            if house_model is None:
+                return None
+
+            return datamapper.house_model_to_entity(house_model)

@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import DefaultDict, Iterable
+from typing import Any, DefaultDict, Dict, Iterable, Type
 
 from dishka import AsyncContainer
 
@@ -9,14 +9,14 @@ from domain.logic.queries.base import QR, BaseQuery, BaseQueryHandler
 
 @dataclass(kw_only=True)
 class Mediator:
-    commands_map: dict[CT, list[BaseCommandHandler]] = field(
+    commands_map: dict[Type[CT], list[BaseCommandHandler]] = field(
         default_factory=lambda: DefaultDict(list)
     )
-    queries_map: dict[CT, BaseQueryHandler] = field(
-        default_factory=lambda: DefaultDict(list)
+    queries_map: Dict[Type[BaseQuery[Any]], BaseQueryHandler[Any]] = field(
+        default_factory=dict
     )
 
-    container: AsyncContainer = None
+    container: AsyncContainer
 
     def register_command(
         self, command: CT, handlers: Iterable[BaseCommandHandler[CT, CR]]
@@ -33,14 +33,13 @@ class Mediator:
             ]
             return [await handler.handle(command) for handler in handlers]
 
-    def register_query(self, query: CT, handler: BaseQueryHandler[CT, QR]) -> None:
-        self.queries_map[query] = handler
+    def register_query(
+        self, query_type: Type[BaseQuery[QR]], handler: BaseQueryHandler[QR]
+    ) -> None:
+        self.queries_map[query_type] = handler
 
-    async def handle_query(self, query: BaseQuery) -> QR:
-        query_type = type(query)
-
+    async def handle_query(self, query: BaseQuery[QR]) -> QR:
+        handler_class = self.queries_map.get(type(query))
         async with self.container() as container_r:
-            handler: BaseQueryHandler = await container_r.get(
-                self.queries_map.get(query_type)
-            )
+            handler: BaseQueryHandler[QR] = await container_r.get(handler_class)
             return await handler.handle(query)

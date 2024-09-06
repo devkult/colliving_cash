@@ -1,11 +1,12 @@
 from dataclasses import dataclass
 from sqlalchemy import select
+from sqlalchemy.orm import joinedload
 from typing import Optional
 from domain.entities.colliving import Resident
 from gateways.models.colliving import ResidentModel
 from gateways.repositories.alchemy.base import SqlAlchemyRepository
 from gateways.datamappers import resident_datamapper as datamapper
-from domain.logic.interfaces.repository import ResidentRepository, ResidentRepository
+from domain.interfaces.repository import ResidentRepository, ResidentRepository
 
 
 @dataclass
@@ -39,6 +40,10 @@ class SqlAlchemyResidentRepository(SqlAlchemyRepository, ResidentRepository):
     ) -> Optional[Resident]:
         result = await self.session.execute(
             select(ResidentModel)
+            .options(
+                joinedload(ResidentModel.user),  # подгружаем UserModel
+                joinedload(ResidentModel.house)  # подгружаем HouseModel
+            )
             .where(ResidentModel.user_uuid == user_uuid)
             .where(ResidentModel.house_uuid == house_uuid)
         )

@@ -5,12 +5,12 @@ from domain.logic.exceptions.colliving import (
     UserAlreadyJoinedHouseException,
     UserNotFoundException,
 )
-from domain.logic.interfaces.repository import (
+from domain.interfaces.repository import (
     HouseRepository,
     ResidentRepository,
     UserRepository,
 )
-from domain.logic.interfaces.uow import AsyncUnitOfWork
+from domain.interfaces.uow import AsyncUnitOfWork
 
 
 from dataclasses import dataclass
@@ -33,7 +33,7 @@ class CreateHouseCommandHandler(BaseCommandHandler[CreateHouseCommand, House]):
         if user is None:
             raise UserNotFoundException(command.owner_uuid)
 
-        house = House.create(name=command.name, owner_id=command.owner_uuid)
+        house = House.create(name=command.name, owner=user)
         house = await self.house_repository.add(house)
         await self.uow.commit()
         return house
@@ -66,7 +66,7 @@ class JoinHouseCommandHandler(BaseCommandHandler[JoinHouseCommand, Resident]):
         ):
             raise UserAlreadyJoinedHouseException(user.oid, house.oid)
 
-        resident = Resident.create(user_id=user.oid, house_id=house.oid)
+        resident = Resident.create(user=user, house=house)
         resident = await self.residents_repository.add(resident)
         await self.uow.commit()
         return resident

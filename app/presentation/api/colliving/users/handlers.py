@@ -3,7 +3,7 @@ from dishka import FromDishka
 from dishka.integrations.fastapi import inject
 
 
-from application.api.colliving.users.schemas import (
+from presentation.api.colliving.users.schemas import (
     CreateUserRequestSchema,
     CreateUserResponseSchema,
 )

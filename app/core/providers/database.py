@@ -10,7 +10,7 @@ from sqlalchemy.ext.asyncio import (
 )
 
 # TODO: Засунуть в IOC
-from config import settings
+from core.config import settings
 
 
 class DatabaseProvider(Provider):

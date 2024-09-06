@@ -1,7 +1,7 @@
 from domain.entities.colliving import User
 from domain.logic.commands.base import BaseCommand, BaseCommandHandler
-from domain.logic.interfaces.repository import UserRepository
-from domain.logic.interfaces.uow import AsyncUnitOfWork
+from domain.interfaces.repository import UserRepository
+from domain.interfaces.uow import AsyncUnitOfWork
 
 
 from dataclasses import dataclass

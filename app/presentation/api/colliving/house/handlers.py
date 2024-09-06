@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, status
 from dishka import FromDishka
 from dishka.integrations.fastapi import inject
 
-from application.api.colliving.house.schemas import (
+from presentation.api.colliving.house.schemas import (
     CreateHouseRequestSchema,
     CreateHouseResponseSchema,
     GetHouseResidentsResponseSchema,
@@ -32,7 +32,7 @@ router = APIRouter()
 @inject
 async def get_house(house_id: str, mediator: FromDishka[Mediator]):
     try:
-        house: House = await mediator.handle_query(GetHouseQuery(house_uuid=house_id))
+        house = await mediator.handle_query(GetHouseQuery(house_uuid=house_id))
     except HouseNotFoundException as e:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail={"error": e.message}
@@ -52,11 +52,11 @@ async def create_house(
 ):
     try:
         house, *_ = await mediator.handle_command(
-            CreateHouseCommand(name=schema.name, owner_uuid=schema.owner_uuid)
+            CreateHouseCommand(name=schema.name, owner_uuid=schema.owner_id)
         )
-    except ColivingCashException as e:
+    except UserNotFoundException as e:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, detail={"error": e.message}
+            status_code=status.HTTP_404_NOT_FOUND, detail={"error": e.message}
         )
     return CreateHouseResponseSchema.from_entity(house)
 
@@ -87,12 +87,14 @@ async def get_house_residents(house_id: str, mediator: FromDishka[Mediator]):
     responses={status.HTTP_201_CREATED: {"model": JoinHouseResponseSchema}},
 )
 @inject
-async def join_house(schema: JoinHouseRequestSchema, mediator: FromDishka[Mediator]):
+async def join_house(
+    house_id: str, schema: JoinHouseRequestSchema, mediator: FromDishka[Mediator]
+):
     try:
         resident, *_ = await mediator.handle_command(
-            JoinHouseCommand(user_uuid=schema.user_uuid, house_uuid=schema.house_uuid)
+            JoinHouseCommand(user_uuid=schema.user_id, house_uuid=house_id)
         )
-    except HouseNotFoundException or UserNotFoundException as e:
+    except (HouseNotFoundException, UserNotFoundException) as e:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail={"error": e.message}
         )

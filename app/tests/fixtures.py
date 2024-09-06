@@ -1,17 +1,18 @@
-from dishka import AsyncContainer, make_async_container, provide
+from dishka import AsyncContainer, Scope, make_async_container, provide
 
-from dependencies.ioc import MyProvider
+from core.ioc import MyProvider
 from gateways.repositories.memory import (
     MemoryHouseRepository,
     MemoryResidentRepository,
     MemoryUserRepository,
 )
-from domain.logic.interfaces.repository import (
+from domain.interfaces.repository import (
     HouseRepository,
     ResidentRepository,
     UserRepository,
 )
-from domain.logic.interfaces.uow import AsyncUnitOfWork
+from domain.interfaces.uow import AsyncUnitOfWork
+from gateways.repositories.memory.base import MemoryStorage
 
 
 class DummySession:
@@ -27,18 +28,23 @@ class DummyProvider(MyProvider):
     @provide
     async def get_uow(self) -> AsyncUnitOfWork:
         return DummySession()
+    
+    @provide(scope=Scope.APP)
+    async def get_memory_storage(self) -> MemoryStorage:
+        print("get_memory_storage")
+        return MemoryStorage()
 
     @provide
-    async def get_user_repository(self) -> UserRepository:
-        return MemoryUserRepository()
+    async def get_user_repository(self, storage: MemoryStorage) -> UserRepository:
+        return MemoryUserRepository(storage=storage)
 
     @provide
-    async def get_house_repository(self) -> HouseRepository:
-        return MemoryHouseRepository()
+    async def get_house_repository(self, storage: MemoryStorage) -> HouseRepository:
+        return MemoryHouseRepository(storage=storage)
 
     @provide
-    async def get_resident_repository(self) -> ResidentRepository:
-        return MemoryResidentRepository()
+    async def get_resident_repository(self, storage: MemoryStorage) -> ResidentRepository:
+        return MemoryResidentRepository(storage=storage)
 
 
 def init_dummy_container() -> AsyncContainer:

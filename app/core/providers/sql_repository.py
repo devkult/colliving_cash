@@ -7,7 +7,7 @@ from gateways.repositories.alchemy.resident_repository import (
     SqlAlchemyResidentRepository,
 )
 from gateways.repositories.alchemy.user_repository import SqlAlchemyUserRepository
-from domain.logic.interfaces.repository import (
+from domain.interfaces.repository import (
     HouseRepository,
     ResidentRepository,
     UserRepository,

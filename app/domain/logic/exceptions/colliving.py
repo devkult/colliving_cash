@@ -9,7 +9,7 @@ class UserNotFoundException(LogicException):
 
     @property
     def message(self) -> str:
-        return f"User with uuid {self.user_uuid} not found"
+        return f"User with id {self.user_uuid} not found"
 
 
 @dataclass(eq=False)
@@ -18,7 +18,7 @@ class HouseNotFoundException(LogicException):
 
     @property
     def message(self) -> str:
-        return f"House with uuid {self.house_uuid} not found"
+        return f"House with id {self.house_uuid} not found"
 
 
 @dataclass(eq=False)
@@ -28,4 +28,4 @@ class UserAlreadyJoinedHouseException(LogicException):
 
     @property
     def message(self) -> str:
-        return f"User with uuid {self.user_uuid} already joined house with uuid {self.house_uuid}"
+        return f"User with id {self.user_uuid} already joined house with uuid {self.house_uuid}"

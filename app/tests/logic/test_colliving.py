@@ -8,7 +8,7 @@ from domain.logic.exceptions.colliving import (
     UserAlreadyJoinedHouseException,
     UserNotFoundException,
 )
-from domain.logic.interfaces.repository import HouseRepository
+from domain.interfaces.repository import HouseRepository, ResidentRepository
 from domain.logic.mediator import Mediator
 from domain.logic.queries.house import GetHouseQuery, GetHouseResidentsQuery
 
@@ -28,7 +28,7 @@ async def test_create_house(
         CreateHouseCommand(name=faker.name(), owner_uuid=user.oid)
     )
     assert house
-    assert house.owner_id == user.oid
+    assert house.owner.oid == user.oid
     assert await house_repository.get_by_uuid(house.oid)
 
 
@@ -52,8 +52,8 @@ async def test_join_house(mediator: Mediator, faker: Faker) -> None:
         JoinHouseCommand(house_uuid=house.oid, user_uuid=user.oid)
     )
     assert resident
-    assert resident.user_id == user.oid
-    assert resident.house_id == house.oid
+    assert resident.user.oid == user.oid
+    assert resident.house.oid == house.oid
 
 
 @pytest.mark.asyncio
@@ -109,7 +109,7 @@ async def test_get_house_residents(mediator: Mediator, faker: Faker) -> None:
 
 @pytest.mark.asyncio
 async def test_get_non_existing_house_residents(
-    mediator: Mediator, faker: Faker
+    mediator: Mediator, faker: Faker, house_repository: HouseRepository
 ) -> None:
     user, *_ = await mediator.handle_command(CreateUserCommand(name=faker.name()))
     house, *_ = await mediator.handle_command(

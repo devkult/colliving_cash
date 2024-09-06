@@ -3,7 +3,7 @@ from faker import Faker
 from pytest import fixture
 
 from domain.logic.mediator import Mediator
-from domain.logic.interfaces.repository import (
+from domain.interfaces.repository import (
     HouseRepository,
     ResidentRepository,
     UserRepository,
@@ -16,7 +16,7 @@ async def faker() -> Faker:
     return Faker()
 
 
-@fixture(scope="function")
+@fixture(scope="session")
 def container() -> AsyncContainer:
     return init_dummy_container()
 
@@ -24,7 +24,6 @@ def container() -> AsyncContainer:
 @fixture()
 async def mediator(container: AsyncContainer) -> Mediator:
     mediator = await container.get(Mediator)
-    mediator.container = container
     return mediator
 
 
@@ -41,6 +40,6 @@ async def house_repository(container: AsyncContainer) -> HouseRepository:
 
 
 @fixture()
-async def resident_repository(container: AsyncContainer) -> ResidentRepository:
+async def house_repo(container: AsyncContainer) -> ResidentRepository:
     async with container() as container_r:
         return await container_r.get(ResidentRepository)
