@@ -14,6 +14,7 @@ class User(BaseEntity):
             name=name,
         )
 
+
 @dataclass
 class House(BaseEntity):
     name: str
@@ -25,6 +26,7 @@ class House(BaseEntity):
             name=name,
             owner=owner,
         )
+
 
 @dataclass
 class Resident(BaseEntity):
@@ -45,9 +47,8 @@ class Exchange(BaseEntity):
     title: str
     description: str
     resident: Resident
-    
+
 
 class Bill(BaseEntity):
-    exchanges: list[Exchange] 
+    exchanges: list[Exchange]
     house: House
-

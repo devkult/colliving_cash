@@ -14,7 +14,7 @@ async def lifespan(app: FastAPI):
     container = init_container()
     scheduler = await container.get(Scheduler)
     mediator = await container.get(Mediator)
-    
+
     # job = await scheduler.spawn(consume_in_background())
 
     yield

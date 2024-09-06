@@ -4,7 +4,8 @@ from dataclasses import dataclass, field
 from typing import TypeVar, Generic
 import threading
 
-D = TypeVar('D')
+D = TypeVar("D")
+
 
 @dataclass
 class MemoryStorage(Generic[D]):
@@ -19,7 +20,7 @@ class MemoryStorage(Generic[D]):
                 return value
             return atr
 
+
 @dataclass
 class MemoryRepository:
     storage: MemoryStorage
-    

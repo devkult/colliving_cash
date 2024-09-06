@@ -28,7 +28,7 @@ class DummyProvider(MyProvider):
     @provide
     async def get_uow(self) -> AsyncUnitOfWork:
         return DummySession()
-    
+
     @provide(scope=Scope.APP)
     async def get_memory_storage(self) -> MemoryStorage:
         print("get_memory_storage")
@@ -43,7 +43,9 @@ class DummyProvider(MyProvider):
         return MemoryHouseRepository(storage=storage)
 
     @provide
-    async def get_resident_repository(self, storage: MemoryStorage) -> ResidentRepository:
+    async def get_resident_repository(
+        self, storage: MemoryStorage
+    ) -> ResidentRepository:
         return MemoryResidentRepository(storage=storage)
 
 

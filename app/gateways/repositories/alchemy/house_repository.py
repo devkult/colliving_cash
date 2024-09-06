@@ -17,14 +17,14 @@ class SqlAlchemyHouseRepository(SqlAlchemyRepository, HouseRepository):
         return house
 
     async def get_by_uuid(self, uuid: str) -> Optional[House]:
-            result = await self.session.execute(
-                select(HouseModel)
-                .options(joinedload(HouseModel.owner))  
-                .where(HouseModel.uuid == uuid)
-            )
-            house_model = result.scalars().first()
+        result = await self.session.execute(
+            select(HouseModel)
+            .options(joinedload(HouseModel.owner))
+            .where(HouseModel.uuid == uuid)
+        )
+        house_model = result.scalars().first()
 
-            if house_model is None:
-                return None
+        if house_model is None:
+            return None
 
-            return datamapper.house_model_to_entity(house_model)
+        return datamapper.house_model_to_entity(house_model)

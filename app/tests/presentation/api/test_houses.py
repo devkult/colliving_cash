@@ -4,6 +4,7 @@ from fastapi.testclient import TestClient
 from httpx import Response
 import pytest
 
+
 async def create_user(app: FastAPI, client: TestClient, faker: Faker) -> None:
     url = app.url_path_for("create_user")
     username = faker.name()
@@ -13,7 +14,10 @@ async def create_user(app: FastAPI, client: TestClient, faker: Faker) -> None:
 
     return user_id, username
 
-async def create_house(app: FastAPI, client: TestClient, faker: Faker, user_id: str) -> None:
+
+async def create_house(
+    app: FastAPI, client: TestClient, faker: Faker, user_id: str
+) -> None:
     url = app.url_path_for("create_house")
     name = faker.name()
     house_create_response: Response = client.post(
@@ -24,7 +28,10 @@ async def create_house(app: FastAPI, client: TestClient, faker: Faker, user_id: 
 
     return house_id, name
 
-async def join_house(app: FastAPI, client: TestClient, faker: Faker, user_id: str, house_id: str) -> None:
+
+async def join_house(
+    app: FastAPI, client: TestClient, faker: Faker, user_id: str, house_id: str
+) -> None:
     url = app.url_path_for("join_house", house_id=house_id)
     response: Response = client.post(url, json={"user_id": user_id})
     assert response.status_code == 201
@@ -32,13 +39,17 @@ async def join_house(app: FastAPI, client: TestClient, faker: Faker, user_id: st
     assert resident_id
     return resident_id
 
+
 @pytest.mark.asyncio
 async def test_create_house(app: FastAPI, client: TestClient, faker: Faker) -> None:
     user_id, _ = await create_user(app, client, faker)
     await create_house(app, client, faker, user_id)
 
+
 @pytest.mark.asyncio
-async def test_create_house_with_non_existing_user(app: FastAPI, client: TestClient, faker: Faker) -> None:
+async def test_create_house_with_non_existing_user(
+    app: FastAPI, client: TestClient, faker: Faker
+) -> None:
     url = app.url_path_for("create_house")
     name = faker.name()
     house_create_response: Response = client.post(
@@ -58,8 +69,11 @@ async def test_get_house(app: FastAPI, client: TestClient, faker: Faker) -> None
     assert response.json()["name"] == name
     assert response.json()["owner_id"] == user_id
 
+
 @pytest.mark.asyncio
-async def test_get_non_existing_house(app: FastAPI, client: TestClient, faker: Faker) -> None:
+async def test_get_non_existing_house(
+    app: FastAPI, client: TestClient, faker: Faker
+) -> None:
     url = app.url_path_for("get_house", house_id=faker.uuid4())
     response: Response = client.get(url)
     assert response.status_code == 404
@@ -74,13 +88,18 @@ async def test_join_house(app: FastAPI, client: TestClient, faker: Faker) -> Non
 
 
 @pytest.mark.asyncio
-async def test_join_non_existing_house(app: FastAPI, client: TestClient, faker: Faker) -> None:
+async def test_join_non_existing_house(
+    app: FastAPI, client: TestClient, faker: Faker
+) -> None:
     url = app.url_path_for("join_house", house_id=faker.uuid4())
     response: Response = client.post(url, json={"user_id": faker.uuid4()})
     assert response.status_code == 404
 
+
 @pytest.mark.asyncio
-async def test_join_non_existing_user(app: FastAPI, client: TestClient, faker: Faker) -> None:
+async def test_join_non_existing_user(
+    app: FastAPI, client: TestClient, faker: Faker
+) -> None:
     user_id, _ = await create_user(app, client, faker)
     house_id, _ = await create_house(app, client, faker, user_id)
 
@@ -88,8 +107,11 @@ async def test_join_non_existing_user(app: FastAPI, client: TestClient, faker: F
     response: Response = client.post(url, json={"user_id": faker.uuid4()})
     assert response.status_code == 404
 
+
 @pytest.mark.asyncio
-async def test_get_house_residents(app: FastAPI, client: TestClient, faker: Faker) -> None:
+async def test_get_house_residents(
+    app: FastAPI, client: TestClient, faker: Faker
+) -> None:
     user_id, _ = await create_user(app, client, faker)
     house_id, _ = await create_house(app, client, faker, user_id)
 

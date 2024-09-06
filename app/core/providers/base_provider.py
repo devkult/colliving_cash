@@ -98,4 +98,3 @@ class MyProvider(Provider):
         mediator.register_query(GetHouseQuery, GetHouseQueryHandler)
         mediator.register_query(GetHouseResidentsQuery, GetHouseResidentsQueryHandler)
         return mediator
-

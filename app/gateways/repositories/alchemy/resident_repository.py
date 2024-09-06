@@ -42,7 +42,7 @@ class SqlAlchemyResidentRepository(SqlAlchemyRepository, ResidentRepository):
             select(ResidentModel)
             .options(
                 joinedload(ResidentModel.user),  # подгружаем UserModel
-                joinedload(ResidentModel.house)  # подгружаем HouseModel
+                joinedload(ResidentModel.house),  # подгружаем HouseModel
             )
             .where(ResidentModel.user_uuid == user_uuid)
             .where(ResidentModel.house_uuid == house_uuid)
